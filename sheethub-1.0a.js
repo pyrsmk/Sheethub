@@ -8,7 +8,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
     
     [ ] gestion des imports
     [ ] addRule/deleteRule/insertRule/removeRule
-    [ ] unit testing
+    [/] unit testing
 */
 
 (function(win){
@@ -22,28 +22,32 @@ The Software is provided "as is", without warranty of any kind, express or impli
         this.listeners=[];
         
         this.addListener=function(event,callback){
-            event=event.toLowerCase();
-            this.listeners[event]=[];
+            if(this.listeners[event=event.toLowerCase()]===undefined){
+                this.listeners[event]=[];
+            }
             this.listeners[event].push(callback);
+            
+            console.log(this.listeners[event]);
         };
         
         this.removeListener=function(event,callback){
-            var subscribers=this.listeners[event.toLowerCase()];
-            for(var i in subscribers){
-                if(subscribers[i]===callback){
-                    subscribers.splice(i,1);
+            var listeners=this.listeners[event=event.toLowerCase()];
+            for(var i in listeners){
+                if(listeners[i]===callback){
+                    listeners.splice(i,1);
                     break;
                 }
             }
-            return this;
+            this.listeners[event]=listeners;
+            
+            console.log(this.listeners[event]);
         };
         
         this.dispatch=function(event){
-            var subscribers=this.listeners[event.toLowerCase()];
-            for(var i in subscribers){
-                subscribers[i]();
+            var listeners=this.listeners[event.toLowerCase()];
+            for(var i in listeners){
+                listeners[i]();
             }
-            return this;
         };
         
     }
@@ -52,20 +56,18 @@ The Software is provided "as is", without warranty of any kind, express or impli
         Stylesheet object
     ========================================================================*/
     
-    win.Stylesheet={};
-    
     /*
         Constructor
         
-        DOMNode node: the node to link with
+        DOMNode|string contents: a LINK node, a STYLE node or CSS rules
     */
-    function Stylesheet(stylesheet_node){
+    Stylesheet=function(contents){
         
-        // DOMNode node: a node that represents the stylesheet
-        this.node=stylesheet_node;
-        
-        //EventManager events: the event manager
+        // EventManager events: the event manager
         this.events=new EventManager;
+        
+        // DOMNode node: the DOM node of the stylesheet
+        this.node;
         
         /*
             Verifies the node state
@@ -145,7 +147,9 @@ The Software is provided "as is", without warranty of any kind, express or impli
             Returns: array
         */
         this.getMedias=function(){
-            return this.node.media.split(',');
+            var medias=this.node.media.split(',');
+            if(medias[0]=='') medias.splice(0,1);
+            return medias;
         };
         
         /*
@@ -173,7 +177,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             var medias=this.getMedias();
             for(var i in medias){
                 if(medias[i]==media){
-                    medias[i].splice(i,1);
+                    medias.splice(i,1);
                     break;
                 }
             }
@@ -187,7 +191,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             Returns: CSSRuleList
         */
         this.getRules=function(){
-            var cssstylesheet=this.getCSSStylesheet();
+            var cssstylesheet=this.getCSSStyleSheet();
             if(cssstylesheet.cssRules)  return cssstylesheet.cssRules;  // General browsers
             else                        return cssstylesheet.rules;     // IE
         };
@@ -198,7 +202,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             Returns: boolean
         */
         this.isDisabled=function(){
-            return this.getCSSStylesheet().disabled;
+            return this.getCSSStyleSheet().disabled;
         };
         
         /*
@@ -207,7 +211,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             Returns: Stylesheet
         */
         this.enable=function(){
-            this.getCSSStylesheet().disabled=false;
+            this.getCSSStyleSheet().disabled=false;
             return this;
         };
         
@@ -217,7 +221,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             Returns: Stylesheet
         */
         this.disable=function(){
-            this.getCSSStylesheet().disabled=true;
+            this.getCSSStyleSheet().disabled=true;
             return this;
         };
         
@@ -228,7 +232,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             this.node=document.createElement('style');
             this.node.type='text/css';
             this.node.rel='stylesheet';
-            document.getElementsByTagName('head')[0].appendChild(node);
+            document.getElementsByTagName('head')[0].appendChild(this.node);
         };
         
         /*
@@ -236,7 +240,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             
             Returns: CSSStyleSheet
         */
-        this.getCSSStylesheet=function(){
+        this.getCSSStyleSheet=function(){
             if(this.node.sheet!==undefined) return this.node.sheet;      // General browsers
             else                            return this.node.styleSheet; // IE
         };
@@ -297,17 +301,21 @@ The Software is provided "as is", without warranty of any kind, express or impli
             xhr.send();
         };
         
-        /*
+        /*----------------------------------------
             Construction
-        */
-        
-        // Fill the node
-        if(this.node.tagName=='LINK'){
-            this.retrieveStylesheet();
-        }
-        // Or create a new node
-        else if(this.node.tagName!='STYLE'){
+        ----------------------------------------*/
+        if(contents===undefined){
             this.createNewNode();
+        }
+        else if(typeof contents=='string'){
+            this.createNewNode();
+            this.setContents(contents);
+        }
+        else{
+            this.node=contents;
+            if(this.node.tagName=='LINK'){
+                this.retrieveStylesheet();
+            }
         }
         
     }
@@ -348,7 +356,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
         if(Sheethub.hasStylesheet(id)){
             throw "The '"+id+"' stylesheet already exists";
         }
-        if(stylesheet instanceof Stylesheet){
+        if(!(stylesheet instanceof Stylesheet)){
             throw 'The stylesheet object must be of type Stylesheet';
         }
         // Add the new stylesheet
@@ -400,7 +408,6 @@ The Software is provided "as is", without warranty of any kind, express or impli
     /*========================================================================
         Initializes the whole stuff
     ========================================================================*/
-    
     var stylesheets=[];
     var sheetsToLoad=0;
     // Get linked stylesheets
@@ -409,6 +416,8 @@ The Software is provided "as is", without warranty of any kind, express or impli
     var j=links.length;
     for(var i=0;i<j;++i){
         nodes.push(links[i]);
+        // One more to load!
+        ++sheetsToLoad;
     }
     // Get embedded stylesheets
     var styles=document.getElementsByTagName('style');
@@ -419,15 +428,10 @@ The Software is provided "as is", without warranty of any kind, express or impli
     // Create Stylesheet objects
     for(var i in nodes){
         var node=nodes[i];
-        // One more to load!
-        ++sheetsToLoad;
         // Get the stylesheet title or create one
         var id;
-        if(node.title!==undefined){
-            id=node.title;
-        }
-        if(id===undefined || Sheethub.hasStylesheet(id)){
-            while(Sheethub.hasStylesheet(id='stylesheet'+Math.random()*8999+1000)){}
+        if((id=node.title)=='' || Sheethub.hasStylesheet(id)){
+            while(Sheethub.hasStylesheet(id='stylesheet'+Math.round(Math.random()*8999+1000))){}
         }
         // Add the stylesheet
         stylesheets[id]=new Stylesheet(node);
@@ -435,9 +439,8 @@ The Software is provided "as is", without warranty of any kind, express or impli
         stylesheets[id].events.addListener(
             'ready',
             function(){
-                if(!(--sheetsToLoad)){
+                if(--sheetsToLoad==0){
                     Sheethub.events.dispatch('ready');
-                    Sheethub.events.removeListener('ready',Sheethub);
                 }
             }
         );

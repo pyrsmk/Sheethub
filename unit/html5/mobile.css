@@ -1,0 +1,40 @@
+html{
+    background:#FFFFD4;
+    color:#111;
+}
+header,footer{
+    font-family:verdana;
+}
+header{
+    font-size:5em;
+    border-bottom:0.1em solid black;
+    padding-bottom:0.1em;
+}
+article{
+    font-family:georgia;
+}
+h1{
+    color:#FFFFD4;
+    background:#111;
+    border-radius:5px;
+    padding:0.1em;
+    padding-left:0.3em;
+}
+h2{
+    font-size:1.4em;
+}
+footer{
+    font-size:0.8em;
+    text-align:center;
+    margin:2em 0;
+    color:#FFFFD4;
+    background:#111;
+    border-radius:5px;
+    padding:0.1em;
+}
+a{
+    color:#FFFFD4;
+}
+a:hover{
+    color:#738ABD;
+}
