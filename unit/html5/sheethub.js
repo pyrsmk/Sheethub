@@ -1,1 +1,1 @@
-../../sheethub-1.0a.js
+../../sheethub.js
