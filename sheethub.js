@@ -16,7 +16,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
 (function(win){
     
     /*========================================================================
-        Very simple event manager
+        Minimal event manager
     ========================================================================*/
 
     function EventManager(){
@@ -28,7 +28,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
                 this.listeners[event]=[];
             }
             this.listeners[event].push(callback);
-            
+            //=========================================
             console.log(this.listeners[event]);
         };
         
@@ -41,7 +41,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
                 }
             }
             this.listeners[event]=listeners;
-            
+            //=========================================
             console.log(this.listeners[event]);
         };
         
