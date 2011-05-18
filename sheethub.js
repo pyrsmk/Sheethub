@@ -123,10 +123,10 @@ The Software is provided "as is", without warranty of any kind, express or impli
             Returns: string
         */
         this.getContents=function(){
-            if(this.node.innerText==''){
-                return this.node.text;
+            if(this.node.textContent!==undefined){
+                return this.node.textContent;
             }
-            return this.node.innerText;
+            return this.node.text;
         };
         
         /*

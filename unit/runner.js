@@ -17,14 +17,6 @@ describe('Stylesheet object',function(){
     var stylesheet;
     
     beforeEach(function(){
-        this.addMatchers({
-		    toBeAnInstanceOf:function(expected){
-			    return this.actual instanceof expected;
-		    },
-		    toBeAnObject:function(){
-		        return typeof this.actual=='object';
-		    }
-	    });
         stylesheet=new Stylesheet;
     });
     
@@ -35,6 +27,11 @@ describe('Stylesheet object',function(){
     });
     
     it("should return a Stylesheet object",function(){
+        this.addMatchers({
+		    toBeAnInstanceOf:function(expected){
+			    return this.actual instanceof expected;
+		    }
+	    });
         expect(stylesheet).toBeAnInstanceOf(Stylesheet);
     });
     
@@ -49,7 +46,7 @@ describe('Stylesheet object',function(){
     
     it("should not be empty",function(){
     	stylesheet.setContents('html{display:block;}');
-        expect(stylesheet.getContents()).toContain('html{display:block;}');
+        expect(stylesheet.getContents()).toBe('html{display:block;}');
     });
     
     it("should have a 'screen' media type",function(){
@@ -69,12 +66,42 @@ describe('Stylesheet object',function(){
         expect(stylesheet.getMedias()).toContain('print');
     });
 	
-	it("should return an object (CSSStyleSheet)",function(){
-        expect(stylesheet.getCSSStyleSheet()).toBeAnObject();
+	it("should return a CSSStyleSheet object or compatible",function(){
+	    this.addMatchers({
+		    toBeCSSStyleSheet:function(expected){
+		        try{
+                    if(this.actual instanceof CSSStyleSheet){
+                        return true;
+                    }
+		        }
+		        catch(e){
+		            if(this.actual.disabled!==undefined && (this.actual.cssRules!==undefined || this.actual.rules!==undefined)){
+		                return true;
+		            }
+		        }
+			    return false;
+		    }
+	    });
+        expect(stylesheet.getCSSStyleSheet()).toBeCSSStyleSheet();
     });
 	
-	it("should return an object (CSSRuleList)",function(){
-        expect(stylesheet.getRules()).toBeAnObject();
+	it("should return a CSSRuleList object or compatible",function(){
+	    this.addMatchers({
+		    toBeCSSRuleList:function(){
+		        try{
+		            if(this.actual instanceof CSSRuleList){
+		                return true;
+		            }
+		        }
+		        catch(e){
+		            if(typeof this.actual=='object'){
+		                return true;
+		            }
+		        }
+		        return false;
+		    }
+	    });
+        expect(stylesheet.getRules()).toBeCSSRuleList();
     });
 	
 	it("should be natively enabled",function(){
