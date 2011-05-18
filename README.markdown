@@ -6,9 +6,9 @@ Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS poly
 Advantages
 ----------
 
-- tiny
-- robust
-- cross-browser
+- tiny  (less than 4k uglified)
+- robust (with a full unit-testing suite)
+- cross-browser (IE6-8, Chrome 12, FF4, Safari 5, Opera 11.10)
 
 Disadvantages
 -------------
@@ -22,12 +22,18 @@ Documentation
 
 ### The ready state
 
-Sheethub provides an event to inform that all the nodes are loaded, and the specific stylesheets have been retrieved: ready. Currently, there's just this event in the core. Nevertheless, we chose to implement events in a way to manage other events in the future without breaking something in your library.
+Sheethub provides an event to inform that all the nodes are loaded, and the specific stylesheets have been retrieved: ready. Currently, there's just this event in the core. Nevertheless, we chose to implement the event manager in a way to deal with other events in the future without breaking something in your library.
 
     var callback=function(){};
     Sheethub.events.addListener('ready',callback);
     /* some code */
     Sheethub.events.removeListener('ready',callback);
+
+Moreover, depending on your code, Sheethub can be ready _before_ you've plugged your library to the event. Then, you can also verify the state with:
+
+    if(Sheethub.ready){
+        // ready!
+    }
 
 ### Managing stylesheets
 

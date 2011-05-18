@@ -1,5 +1,5 @@
 /*
-    Sheethub 1.0a3, the CSS API for polyfills
+    Sheethub 1.0a5, the CSS API for polyfills
     
     Copyright © Aurélien Delogu <dev@dreamysource.fr>
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -29,7 +29,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             }
             this.listeners[event].push(callback);
             //=========================================
-            console.log(this.listeners[event]);
+            console.log("ajouté: "+callback+" ===> "+this.listeners[event]);
         };
         
         this.removeListener=function(event,callback){
@@ -42,7 +42,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             }
             this.listeners[event]=listeners;
             //=========================================
-            console.log(this.listeners[event]);
+            console.log("supprimé: "+callback+" ===> "+this.listeners[event]);
         };
         
         this.dispatch=function(event){
@@ -328,6 +328,9 @@ The Software is provided "as is", without warranty of any kind, express or impli
     if(win.Sheethub!==undefined) return;
     win.Sheethub={};
     
+    // boolean ready: the init state (true when all native stylesheets are loaded)
+    Sheethub.ready=false;
+    
     // EventManager events: the event manager
     Sheethub.events=new EventManager;
     
@@ -440,6 +443,7 @@ The Software is provided "as is", without warranty of any kind, express or impli
             'ready',
             function(){
                 if(--sheetsToLoad==0){
+                    Sheethub.ready=true;
                     Sheethub.events.dispatch('ready');
                 }
             }

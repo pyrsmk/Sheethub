@@ -125,14 +125,15 @@ describe('Stylesheet object',function(){
     Events manager
 =========================================================*/
 
-/*describe('Event manager',function(){
+describe('Event manager',function(){
     
     // Cleaning
     afterEach(function(){
         var listeners=Sheethub.events.listeners['ready'];
-        for(var i in listeners){
-            log('supprimé: '+listeners[i]);
-            Sheethub.events.removeListener('ready',listeners[i]);
+        if(listeners!==undefined){
+            while(listeners.length){
+                Sheethub.events.removeListener('ready',listeners[0]);
+            }
         }
     });
     
@@ -145,9 +146,7 @@ describe('Stylesheet object',function(){
     });
     
     it("should have two callbacks for the 'ready' event",function(){
-        log("ajouté: function(){'callback1'}");
         Sheethub.events.addListener('ready',function(){'callback1'});
-        log("ajouté: function(){'callback2'}");
         Sheethub.events.addListener('ready',function(){'callback2'});
         var callbacks=0;
         for(var i in Sheethub.events.listeners['ready']){
@@ -156,7 +155,7 @@ describe('Stylesheet object',function(){
         expect(callbacks).toBe(2);
     });
 
-});*/
+});
 
 /*=========================================================
     Sheethub manager
@@ -165,15 +164,17 @@ describe('Stylesheet object',function(){
 describe('Sheethub manager',function(){
     
     // Sheethub must be ready to work with
-    /*var called=false; 
-    if(!called){
-        var callback=function(){called=true};
-        log("ajouté: function(){called=true}");
-        Sheethub.events.addListener('ready',callback);
-        waitsFor(function(){return called});
-        log("supprimé: function(){called=true}");
-        Sheethub.events.removeListener('ready',callback);
-    }
+    var called=false;
+    beforeEach(function(){
+        if(!called && !Sheethub.ready){
+            var callback=function(){called=true};
+            Sheethub.events.addListener('ready',callback);
+            waitsFor(function(){return called});
+            runs(function(){
+                Sheethub.events.removeListener('ready',callback);
+            });
+        }
+    });
     
     it("should have 4 native stylesheets loaded",function(){
         var sheets=0;
@@ -181,7 +182,7 @@ describe('Sheethub manager',function(){
             ++sheets;
         }
         expect(sheets).toEqual(4);
-    });*/
+    });
     
     it("should have a 'test' stylesheet",function(){
         Sheethub.addStylesheet('test',new Stylesheet('html{display:block}'));
