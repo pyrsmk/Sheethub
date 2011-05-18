@@ -8,7 +8,6 @@ The Software is provided "as is", without warranty of any kind, express or impli
     
     [ ] imports management
     [ ] addRule/deleteRule/insertRule/removeRule
-    [/] unit testing
     
     could be interesting: http://closure-library.googlecode.com/svn/docs/closure_goog_cssom_cssom.js.source.html
 */
