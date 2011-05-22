@@ -38,3 +38,23 @@ a{
 a:hover{
     color:#738ABD;
 }
+.mod,.pass,.fail,ul{
+    list-style-type:none;
+    margin:0;
+    padding:5px;
+}
+li ul{
+    margin-left:15px;
+}
+.mod{
+    font-weight:bold;
+}
+.fail{
+    background:#DD2222;
+}
+.sink-pass{
+    background:#D6E895;
+}
+.sink-failure{
+    background:#DF5D5D;
+}

@@ -3,8 +3,8 @@
     <head>
         <title>Sheethub Unit Testing</title>
         <meta charset="utf-8">
-        <link rel="stylesheet" title="mobile" href="mobile.css">
-        <link rel="stylesheet" media="screen and (min-width:1024px)" href="desktop.css">
+        <link rel="stylesheet" href="mobile.css">
+        <link rel="stylesheet" title="desktop" media="screen and (min-width:1024px)" href="desktop.css">
         <style media="print" title="embedded">
             body{
                 max-width:none;
@@ -14,22 +14,14 @@
                 content:' (' attr(href) ')';
             }
         </style>
-        
-        <link rel="stylesheet" href="jasmine.css">
-        <script src="jasmine.js"></script>
-        <script src="jasmine-html.js"></script>
-        
-        <script src="sheethub.js"></script>
-        <script src="runner.js"></script>
-        
     </head>
     <body role="document">
     
-        <script>
-            jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
-            jasmine.getEnv().execute();
-        </script>
-    
+        <div id="tests"></div>
+        <script src="sheethub.js"></script>
+        <script src="sink-20110503.js"></script>
+        <script src="runner.js"></script>
+        
         <header>Sheethub Unit Testing</header>
         <article>
             <h1>Some lorem ipsum text...</h1>

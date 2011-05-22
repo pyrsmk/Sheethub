@@ -138,4 +138,5 @@ Ok, ok! Let's dive into it!
 
 License
 -------
-Sheethub is published under the MIT (Expat) license.
+
+Sheethub is published under the MIT license (Expat version).
