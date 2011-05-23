@@ -2,17 +2,27 @@
     Stylesheet object
 =========================================================*/
 
+var domReady=this.domReady,
+    sink=this.sink,
+    start=this.start,
+    Stylesheet=this.Stylesheet,
+    CSSStyleSheet=this.CSSStyleSheet,
+    CSSRuleList=this.CSSRuleList,
+    Sheethub=this.Sheethub;
+
+domReady(function(){
+
 sink('Stylesheet object',function(test,ok,before,after){
     
     var stylesheet;
     
     before(function(){
-        stylesheet=new Stylesheet;
+        stylesheet=new Stylesheet();
     });
     
     after(function(){
         if(!stylesheet.isDetached()){
-        	stylesheet.detach();
+            stylesheet.detach();
         }
     });
     
@@ -23,16 +33,16 @@ sink('Stylesheet object',function(test,ok,before,after){
     });
     
     test('Stylesheet contents',1,function(){
-    	stylesheet.setContents('html{display:block}');
+        stylesheet.setContents('html{display:block}');
         ok(stylesheet.getContents()=='html{display:block}',"is 'html{display:block}'");
     });
     
     test('Media types support',3,function(){
-    	stylesheet.addMedia('screen');
+        stylesheet.addMedia('screen');
         ok(stylesheet.getMedias()[0]=='screen',"has 'screen' media type");
-    	stylesheet.removeMedia('screen');
-        ok(stylesheet.getMedias().length==0,'has no media types');
-    	stylesheet.setMedias(['screen','print']);
+        stylesheet.removeMedia('screen');
+        ok(stylesheet.getMedias().length===0,'has no media types');
+        stylesheet.setMedias(['screen','print']);
         ok(stylesheet.getMedias()[0]=='screen' && stylesheet.getMedias()[1]=='print',"has 'screen' and 'print' media types");
     });
 	
@@ -83,25 +93,19 @@ sink('Stylesheet object',function(test,ok,before,after){
 
 sink('Sheethub manager',function(test,ok,before,after){
     
-    test('Events',4,function(){
-        var callbacks=0;
-        for(var i in Sheethub.events.listeners['ready']){
-            ++callbacks;
-        }
-        ok(callbacks==0,'has no listeners natively');
-        var callback1=function(){ok(true,"'ready' event dispatched to callback1")};
-        var callback2=function(){ok(true,"'ready' event dispatched to callback2")};
-        if(Sheethub.ready){
+    test('Event manager',5,function(){
+        ok(Sheethub.getListeners('ready').length===0,'has no listeners natively');
+        var callback1=function(){ok(true,"'ready' event dispatched to callback1");};
+        var callback2=function(){ok(true,"'ready' event dispatched to callback2");};
+        if(Sheethub.isReady()){
             callback1();
             callback2();
         }
-        Sheethub.events.addListener('ready',callback1);
-        Sheethub.events.addListener('ready',callback2);
-        var callbacks=0;
-        for(var i in Sheethub.events.listeners['ready']){
-            ++callbacks;
-        }
-        ok(callbacks==2,'has two listeners');
+        Sheethub.addListener('ready',callback1);
+        Sheethub.addListener('ready',callback2);
+        ok(Sheethub.getListeners('ready').length==2,'has two listeners');
+        Sheethub.clearListeners();
+        ok(Sheethub.getListeners('ready').length===0,'has no listeners');
     });
     
     test('Stylesheets',4,function(){
@@ -120,3 +124,5 @@ sink('Sheethub manager',function(test,ok,before,after){
 });
 
 start();
+
+});

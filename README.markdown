@@ -3,19 +3,15 @@ Sheethub
 
 Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS polyfills, making them work together.
 
-Advantages
-----------
-
 - tiny  (less than 4k uglified)
 - robust (with a full unit-testing suite)
-- cross-browser (IE6-8, Chrome 12, FF4, Safari 5, Opera 11.10)
+- cross-browser (IE5.5-10, Chrome 4-12, FF2-4, Safari 3-5, Opera 9-11)
 
-Disadvantages
--------------
+Remarks
+-------
 
-- must be included aside the polyfills (with the singleton pattern you could insert it directly to your library but you'll get an increase of the total size if many libs are used)
+- Opera 9 and 10 seem to not support CSSStyleSheet.disabled properly, they always report the stylesheet as disabled even though is enabled
 
-If someone else see other cons, please let me know...
 
 Documentation
 -------------
@@ -25,13 +21,13 @@ Documentation
 Sheethub provides an event to inform that all the nodes are loaded, and the specific stylesheets have been retrieved: ready. Currently, there's just this event in the core. Nevertheless, we chose to implement the event manager in a way to deal with other events in the future without breaking something in your library.
 
     var callback=function(){};
-    Sheethub.events.addListener('ready',callback);
+    Sheethub.addListener('ready',callback);
     /* some code */
-    Sheethub.events.removeListener('ready',callback);
+    Sheethub.removeListener('ready',callback);
 
 Moreover, depending on your code, Sheethub can be ready _before_ you've plugged your library to the event. Then, you can also verify the state with:
 
-    if(Sheethub.ready){
+    if(Sheethub.isReady()){
         // ready!
     }
 
@@ -84,7 +80,7 @@ Here's the major part of Sheethub. As we said earlier, there's many ways to inst
     // Stylesheet will automatically retrieve the remote sheet
     new Stylesheet(node);
 
-If you want to know when the object will be ready, you can do exaclty as the Sheethub event example, it has the same 'ready' event and uses the same event manager.
+If you want to know when the object will be ready, you can do exactly as the Sheethub event managing examples, it has the same 'ready' event and uses the same event manager.
 
 The most interesting part of the API is the hability to modify CSS contents.
 
@@ -134,7 +130,7 @@ Ok, ok! Let's dive into it!
             sheets[name].enable;
         }for
     };
-    Sheethub.events.addListener('ready',callback);
+    Sheethub.addListener('ready',callback);
 
 License
 -------

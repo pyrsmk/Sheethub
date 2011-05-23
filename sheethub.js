@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS API for polyfills
     
-    Version : 1.0a6
+    Version : 1.0a7
     Author  : Aurélien Delogu <dev@dreamysource.fr>
     URL     : <https://github.com/pyrsmk/sheethub> 
     License : MIT
@@ -15,36 +15,86 @@
 (function(window,document){
     
     /*========================================================================
-        Minimal event manager
+        Event manager
     ========================================================================*/
 
     function EventManager(){
         
-        this.listeners=[];
+        // Array listeners: the listeners stack
+        var listeners=[];
         
+        /*
+            Adds a listener to the stack
+            
+            String event        : the event to listen
+            Function callback   : the callback to trigger
+            
+            Returns             : EventManager
+        */
         this.addListener=function(event,callback){
-            if(this.listeners[event=event.toLowerCase()]===undefined){
-                this.listeners[event]=[];
+            if(listeners[event=event.toLowerCase()]===undefined){
+                listeners[event]=[];
             }
-            this.listeners[event].push(callback);
+            listeners[event].push(callback);
+            return this;
         };
         
+        /*
+            Removes a listener from the stack
+            
+            String event        : the event from the listener must be removed
+            Function callback   : the callback
+            
+            Returns             : EventManager
+        */
         this.removeListener=function(event,callback){
-            var listeners=this.listeners[event=event.toLowerCase()];
-            for(var i in listeners){
-                if(listeners[i]===callback){
-                    listeners.splice(i,1);
+            var subscribers=listeners[event=event.toLowerCase()];
+            for(var i in subscribers){
+                if(subscribers[i]===callback){
+                    subscribers.splice(i,1);
                     break;
                 }
             }
-            this.listeners[event]=listeners;
+            listeners[event]=subscribers;
+            return this;
         };
         
+        /*
+            Return the listeners for an event, or all
+            
+            String event    : the event from which to return listeners
+            
+            Returns         : Array, Object
+        */
+        this.getListeners=function(event){
+            return listeners[event=event.toLowerCase()]!==undefined?
+                   listeners[event]:
+                   listeners;
+        };
+        
+        /*
+            Clear the stack
+            
+            Returns: EventManager
+        */
+        this.clearListeners=function(){
+            listeners=[];
+            return this;
+        };
+        
+        /*
+            Dispatches an event
+            
+            string event        : the event to trigger
+            
+            Returns             : EventManager
+        */
         this.dispatch=function(event){
-            var listeners=this.listeners[event.toLowerCase()];
-            for(var i in listeners){
-                listeners[i]();
+            var subscribers=listeners[event=event.toLowerCase()];
+            for(var i in subscribers){
+                subscribers[i]();
             }
+            return this;
         };
         
     }
@@ -60,18 +110,120 @@
     */
     window.Stylesheet=function(contents){
         
+        // Boolean ready    : the init state
+        var ready=false,
+        // DOMNode node     : the DOM node of the stylesheet
+            node,
         // EventManager events: the event manager
-        this.events=new EventManager();
-        // DOMNode node: the DOM node of the stylesheet
-        this.node;
+            events=new EventManager();
+        
+        // Event manager overlay
+        this.addListener=function(event,callback){return events.addListener(event,callback);};
+        this.removeListener=function(event,callback){return events.removeListener(event,callback);};
+        this.getListeners=function(event){return events.getListeners(event);};
+        this.clearListeners=function(){return events.clearListeners();};
+        var dispatch=function(event){return events.dispatch(event);};
+        
+        /*
+            Creates a new STYLE node and links with
+        */
+        var createNewNode=function(){
+            node=document.createElement('style');
+            node.type='text/css';
+            node.rel='stylesheet';
+            document.getElementsByTagName('head')[0].appendChild(node);
+        },
+        
+         /*
+            Returns the stylesheet object from the document.styleSheets API, with title matching
+            
+            Returns: CSSStyleSheet
+        */
+        getCSSStyleSheet=function(){
+            // General browsers
+            if(node.sheet!==undefined){
+                return node.sheet;
+            }
+            // IE
+            else{
+                return node.styleSheet;
+            }
+        },
+        
+        /*
+            Returns a new XMLHttpRequest object
+            
+            Returns: Object, false
+            
+            Documentation: <http://blogs.msdn.com/b/xmlteam/archive/2006/10/23/using-the-right-version-of-msxml-in-internet-explorer.aspx>
+        */
+        getXHRObject=function(){
+            var attempts=[
+                function(){return new window.ActiveXObject('Msxml2.XMLHTTP.3.0');},
+                function(){return new window.ActiveXObject('Msxml2.XMLHTTP.6.0');},
+                function(){return new window.XMLHttpRequest();}
+            ],i=attempts.length;
+            while(i--){
+                try{
+                    return attempts[i]();
+                }
+                catch(e){}
+            }
+            return false;
+        },
+        
+        /*
+            Retrieves remote stylesheet contents
+            
+            String url  : the stylesheet URL
+        */
+        retrieveStylesheet=function(){
+            // Retrieves the XHR object
+            var xhr=getXHRObject();
+            if(xhr===undefined){
+                throw 'XmlHttpRequest is not available';
+            }
+            // Creates the request
+            xhr.open('GET',node.href,true);
+            xhr.onreadystatechange=function(){
+                if(xhr.readyState==4){
+                    if(xhr.status!=200 && xhr.status!=304){
+                        throw 'Ouch! Bad returned state: '+xhr.statusText;
+                    }
+                    // Update contents
+                    try{
+                        // General browsers
+                        node.appendChild(document.createTextNode(xhr.responseText));
+                    }
+                    catch(e){
+                        // IE
+                        node.text=xhr.responseText;
+                    }
+                    // Load complete
+                    ready=true;
+                    dispatch('ready');
+                }
+            };
+            // Sends the request
+            xhr.send(null);
+        };
+        
+        /*
+            Verifies the init state
+            
+            Returns: Boolean
+        */
+        this.isReady=function(){
+            return ready;
+        };
         
         /*
             Verifies the node state
             
-            Returns: boolean
+            Returns: Boolean
         */
         this.isDetached=function(){
-            return this.node===null;
+            return node===null;
         };
         
         /*
@@ -80,35 +232,35 @@
             Returns: Stylesheet
         */
         this.detach=function(){
-            this.node.parentNode.removeChild(this.node);
-            this.node=null;
+            node.parentNode.removeChild(node);
+            node=null;
             return this;
         };
         
         /*
             Sets stylesheet contents
             
-            string contents : the contents
+            String contents : the contents
             
             Return          : Stylesheet
         */
         this.setContents=function(contents){
             // Convert linked node to embedded node
-            if(this.node.tagName=='LINK'){
+            if(node.tagName=='LINK'){
                 this.detach();
                 this.createNewNode();
             }
             // Set new contents
             try{
-                var child=this.node.firstChild;
+                var child=node.firstChild;
                 if(child){
-                    this.node.removeChild(child);
+                    node.removeChild(child);
                 }
-                this.node.appendChild(document.createTextNode(contents));
+                node.appendChild(document.createTextNode(contents));
             }
             catch(e){
                 // IE fallback
-                this.node.text=contents;
+                node.text=contents;
             }
             return this;
         };
@@ -116,34 +268,34 @@
         /*
             Returns the stylesheet contents
             
-            Returns: string
+            Returns: String
         */
         this.getContents=function(){
-            if(this.node.textContent!==undefined){
-                return this.node.textContent;
+            if(node.textContent!==undefined){
+                return node.textContent;
             }
-            return this.node.text;
+            return node.text;
         };
         
         /*
             Sets the media types list for the stylesheet
             
-            array medias    : the media types list
+            Array medias    : the media types list
             
             Returns         : Stylesheet
         */
         this.setMedias=function(medias){
-            this.node.media=medias.join(',');
+            node.media=medias.join(',');
             return this;
         };
         
         /*
             Returns the media types list
             
-            Returns: array
+            Returns: Array
         */
         this.getMedias=function(){
-            var medias=this.node.media.split(',');
+            var medias=node.media.split(',');
             if(medias[0]===''){
                 medias.splice(0,1);
             }
@@ -153,7 +305,7 @@
         /*
             Adds a new media type to the existing list
             
-            string media    : the media type
+            String media    : the media type
             
             Returns         : Stylesheet
         */
@@ -167,7 +319,7 @@
         /*
             Removes a media type from the list
             
-            string media    : the media to remove
+            String media    : the media to remove
             
             Returns         : Stylesheet
         */
@@ -189,7 +341,7 @@
             Returns: CSSRuleList
         */
         this.getRules=function(){
-            var cssstylesheet=this.getCSSStyleSheet();
+            var cssstylesheet=getCSSStyleSheet();
             // General browsers
             if(cssstylesheet.cssRules){
                 return cssstylesheet.cssRules;
@@ -203,10 +355,10 @@
         /*
             Verifies if the stylesheet is disabled or not
             
-            Returns: boolean
+            Returns: Boolean
         */
         this.isDisabled=function(){
-            return this.getCSSStyleSheet().disabled;
+            return getCSSStyleSheet().disabled;
         };
         
         /*
@@ -215,7 +367,7 @@
             Returns: Stylesheet
         */
         this.enable=function(){
-            this.getCSSStyleSheet().disabled=false;
+            getCSSStyleSheet().disabled=false;
             return this;
         };
         
@@ -225,115 +377,36 @@
             Returns: Stylesheet
         */
         this.disable=function(){
-            this.getCSSStyleSheet().disabled=true;
+            getCSSStyleSheet().disabled=true;
             return this;
-        };
-        
-        /*
-            Creates a new STYLE node and links with
-        */
-        this.createNewNode=function(){
-            this.node=document.createElement('style');
-            this.node.type='text/css';
-            this.node.rel='stylesheet';
-            document.getElementsByTagName('head')[0].appendChild(this.node);
-        };
-        
-        /*
-            Returns the stylesheet object from the document.styleSheets API, with title matching
-            
-            Returns: CSSStyleSheet
-        */
-        this.getCSSStyleSheet=function(){
-            // General browsers
-            if(this.node.sheet!==undefined){
-                return this.node.sheet;
-            }
-            // IE
-            else{
-                return this.node.styleSheet;
-            }
-        };
-        
-        /*
-            Returns a new XMLHttpRequest object
-            
-            Returns: object or false
-            
-            Documentation: <http://blogs.msdn.com/b/xmlteam/archive/2006/10/23/using-the-right-version-of-msxml-in-internet-explorer.aspx>
-        */
-        this.getXHRObject=function(){
-            var attempts=[
-                //function(){return new window.ActiveXObject('Msxml2.XMLHTTP.3.0');},
-                function(){return new window.ActiveXObject('Msxml2.XMLHTTP.6.0');},
-                function(){return new window.XMLHttpRequest();}
-            ],i=attempts.length;
-            while(i--){
-                try{
-                    return attempts[i]();
-                }
-                catch(e){}
-            }
-            return false;
-        };
-        
-        /*
-            Retrieves remote stylesheet contents
-            
-            string url  : the stylesheet URL
-        */
-        this.retrieveStylesheet=function(){
-            // Scope
-            var node=this.node;
-            var events=this.events;
-            // Retrieves the XHR object
-            var xhr=this.getXHRObject();
-            if(xhr===undefined){
-                throw 'XmlHttpRequest is not available';
-            }
-            // Creates the request
-            xhr.open('GET',node.href,true);
-            xhr.onreadystatechange=function(){
-                if(xhr.readyState==4){
-                    if(xhr.status!=200 && xhr.status!=304){
-                        throw 'Ouch! Bad returned state: '+xhr.statusText;
-                    }
-                    // Update contents
-                    try{
-                        node.appendChild(document.createTextNode(xhr.responseText));    // General browsers
-                    }
-                    catch(e){
-                        node.text=xhr.responseText;                                     // IE
-                    }
-                    // Load complete
-                    events.dispatch('ready');
-                }
-            };
-            // Sends the request
-            xhr.send();
         };
         
         /*----------------------------------------
             Construction
         ----------------------------------------*/
         if(contents===undefined){
-            this.createNewNode();
+            createNewNode();
+            ready=true;
+            dispatch('ready');
         }
         else if(typeof contents=='string'){
-            this.createNewNode();
+            createNewNode();
             this.setContents(contents);
+            ready=true;
+            dispatch('ready');
         }
         else{
-            this.node=contents;
-            if(this.node.tagName=='LINK'){
-                this.retrieveStylesheet();
+            node=contents;
+            if(node.tagName=='LINK'){
+                retrieveStylesheet();
             }
         }
         
     };
+    var Stylesheet=window.Stylesheet;
     
     /*========================================================================
-        window.Sheethub object
+        Sheethub object
     ========================================================================*/
     
     // Singleton
@@ -341,42 +414,59 @@
         return;
     }
     window.Sheethub={};
+    var Sheethub=window.Sheethub;
     
     // boolean ready: the init state (true when all native stylesheets are loaded)
-    window.Sheethub.ready=false;
-    // EventManager events: the event manager
-    window.Sheethub.events=new EventManager();
+    var ready=false,
     // Array stylesheets: the stylesheets
-    var stylesheets=[];
+        stylesheets=[],
     // integer sheetsToLoad: the number of stylesheets to load, used to trigger the 'ready' event
-    var sheetsToLoad=0;
+        sheetsToLoad=0,
+    // EventManager events: the event manager
+        events=new EventManager();
+    
+    // Event manager overlay
+    Sheethub.addListener=function(event,callback){return events.addListener(event,callback);};
+    Sheethub.removeListener=function(event,callback){return events.removeListener(event,callback);};
+    Sheethub.getListeners=function(event){return events.getListeners(event);};
+    Sheethub.clearListeners=function(){return events.clearListeners();};
+    var dispatch=function(event){return events.dispatch(event);};
+    
+    /*
+        Verifies the init state
+        
+        Returns: Boolean
+    */
+    Sheethub.isReady=function(){
+        return ready;
+    };
     
     /*
         Verifies if a stylesheet is in the stylesheets
         
-        string id: the stylesheet id 
+        String id: the stylesheet id 
         
-        Returns: array
+        Returns: Array
     */
-    window.Sheethub.hasStylesheet=function(id){
+    Sheethub.hasStylesheet=function(id){
         return stylesheets[id]!==undefined;
     };
     
     /*
         Adds a new stylesheet
 
-        string id               : the stylesheet id 
+        String id               : the stylesheet id 
         Stylesheet stylesheet   : a Stylesheet object
         
-        Returns                 : window.Sheethub
+        Returns                 : Sheethub
         Throws an exception     : if the stylesheet already exists
                                 : if the stylesheet is not a Stylesheet object
     */
-    window.Sheethub.addStylesheet=function(id,stylesheet){
-        if(window.Sheethub.hasStylesheet(id)){
+    Sheethub.addStylesheet=function(id,stylesheet){
+        if(Sheethub.hasStylesheet(id)){
             throw "The '"+id+"' stylesheet already exists";
         }
-        if(!(stylesheet instanceof window.Stylesheet)){
+        if(!(stylesheet instanceof Stylesheet)){
             throw 'The stylesheet object must be of type Stylesheet';
         }
         // Add the new stylesheet
@@ -387,13 +477,13 @@
     /*
         Gets a stylesheet
         
-        string id           : the stylesheet id
+        String id           : the stylesheet id
         
         Returns             : Stylesheet
         Throws an exception : if the stylesheet doesn't exist
     */
-    window.Sheethub.getStylesheet=function(id){
-        if(!window.Sheethub.hasStylesheet(id)){
+    Sheethub.getStylesheet=function(id){
+        if(!Sheethub.hasStylesheet(id)){
             throw "The '"+id+"' stylesheet doesn't exist";
         }
         return stylesheets[id];
@@ -402,13 +492,13 @@
     /*
         Removes a stylesheet from the stylesheets
         
-        string id           : the stylesheet id
+        String id           : the stylesheet id
         
-        Returns             : window.Sheethub
+        Returns             : Sheethub
         Throws an exception : if the stylesheet doesn't exist
     */
-    window.Sheethub.removeStylesheet=function(id){
-        if(!window.Sheethub.hasStylesheet(id)){
+    Sheethub.removeStylesheet=function(id){
+        if(!Sheethub.hasStylesheet(id)){
             throw "The '"+id+"' stylesheet doesn't exist";
         }
         stylesheets[id].detach();
@@ -419,26 +509,26 @@
     /*
         Gets all stylesheets
         
-        Returns: array
+        Returns: Array
     */
-    window.Sheethub.getStylesheets=function(){
+    Sheethub.getStylesheets=function(){
         return stylesheets;
     };
     
     /*========================================================================
         Initializes the whole stuff
     ========================================================================*/
+    var nodes=[],
+        links=document.getElementsByTagName('link'),
+        styles=document.getElementsByTagName('style'),
+        j=links.length;
     // Get linked stylesheets
-    var nodes=[];
-    var links=document.getElementsByTagName('link');
-    var j=links.length;
     for(var i=0;i<j;++i){
         nodes.push(links[i]);
         // One more to load!
         ++sheetsToLoad;
     }
     // Get embedded stylesheets
-    var styles=document.getElementsByTagName('style');
     j=styles.length;
     for(i=0;i<j;++i){
         nodes.push(styles[i]);
@@ -446,8 +536,8 @@
     // Create the callback to trigger the 'ready' event
     var callback=function(){
         if(--sheetsToLoad===0){
-            window.Sheethub.ready=true;
-            window.Sheethub.events.dispatch('ready');
+            ready=true;
+            dispatch('ready');
         }
     };
     // Create Stylesheet objects
@@ -455,13 +545,18 @@
         var node=nodes[i];
         // Get the stylesheet title or create one
         var id;
-        if((id=node.title)==='' || window.Sheethub.hasStylesheet(id)){
-            while(window.Sheethub.hasStylesheet(id='stylesheet'+Math.round(Math.random()*8999+1000))){}
+        if((id=node.title)==='' || Sheethub.hasStylesheet(id)){
+            while(Sheethub.hasStylesheet(id='stylesheet'+Math.round(Math.random()*8999+1000))){}
         }
         // Add the stylesheet
-        stylesheets[id]=new window.Stylesheet(node);
+        stylesheets[id]=new Stylesheet(node);        
         // Watch the load state
-        stylesheets[id].events.addListener('ready',callback);
+        if(stylesheets[id].isReady()){
+            callback();
+        }
+        else{
+            stylesheets[id].addListener('ready',callback);
+        }
     }
     
 })(this,this.document);
