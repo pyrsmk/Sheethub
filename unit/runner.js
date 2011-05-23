@@ -2,14 +2,6 @@
     Stylesheet object
 =========================================================*/
 
-var domReady=this.domReady,
-    sink=this.sink,
-    start=this.start,
-    Stylesheet=this.Stylesheet,
-    CSSStyleSheet=this.CSSStyleSheet,
-    CSSRuleList=this.CSSRuleList,
-    Sheethub=this.Sheethub;
-
 domReady(function(){
 
 sink('Stylesheet object',function(test,ok,before,after){

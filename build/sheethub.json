@@ -1,8 +1,7 @@
 {
     "JAVASCRIPT":{
         "DIST_DIR":"./",
-        "classie":["../sheethub.js"],
-        "unit":["../unit/runner.js"]
+        "sheethub":["../sheethub.js"]
     },
     "JSHINT_OPTS":{
         "boss"          : true,

@@ -1,5 +1,5 @@
-Sheethub
-========
+Sheethub 1.0a8
+==============
 
 Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS polyfills, making them work together.
 

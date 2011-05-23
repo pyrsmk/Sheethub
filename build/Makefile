@@ -1,4 +1,5 @@
 # npm install smoosh -g
 smoosh:
-	smoosh -r smoosh.json
+	smoosh -r sheethub.json
+	smoosh -r unit.json
 	uglifyjs -nc ../sheethub.js > ../sheethub.min.js

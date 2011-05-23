@@ -1,0 +1,12 @@
+{
+    "JAVASCRIPT":{
+        "DIST_DIR":"./",
+        "unit":["../unit/runner.js"]
+    },
+    "JSHINT_OPTS":{
+        "boss"          : true,
+        "curly"         : true,
+        "newcap"        : true,
+        "indent"        : 4     
+    }
+}

@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS API for polyfills
     
-    Version : 1.0a7
+    Version : 1.0a8
     Author  : Aurélien Delogu <dev@dreamysource.fr>
     URL     : <https://github.com/pyrsmk/sheethub> 
     License : MIT
@@ -11,6 +11,9 @@
     
     could be interesting: http://closure-library.googlecode.com/svn/docs/closure_goog_cssom_cssom.js.source.html
 */
+
+var Sheethub={},
+    Stylesheet;
 
 (function(window,document){
     
@@ -108,7 +111,7 @@
         
         DOMNode|string contents: a LINK node, a STYLE node or CSS rules
     */
-    window.Stylesheet=function(contents){
+    Stylesheet=function(contents){
         
         // Boolean ready    : the init state
         var ready=false,
@@ -403,18 +406,10 @@
         }
         
     };
-    var Stylesheet=window.Stylesheet;
     
     /*========================================================================
         Sheethub object
     ========================================================================*/
-    
-    // Singleton
-    if(window.Sheethub!==undefined){
-        return;
-    }
-    window.Sheethub={};
-    var Sheethub=window.Sheethub;
     
     // boolean ready: the init state (true when all native stylesheets are loaded)
     var ready=false,
