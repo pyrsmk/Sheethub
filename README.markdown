@@ -1,5 +1,5 @@
-Sheethub 1.0a8
-==============
+Sheethub 0.1.8a
+===============
 
 Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS polyfills, making them work together.
 
@@ -10,7 +10,7 @@ Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS poly
 Remarks
 -------
 
-- Opera 9 and 10 seem to not support CSSStyleSheet.disabled properly, they always report the stylesheet as disabled even though is enabled
+- Opera 9 and 10 seem to not support CSSStyleSheet.disabled properly, they always report the stylesheet as disabled even though is enabled, and disabling a stylesheet seems to not work too
 
 
 Documentation
@@ -130,7 +130,12 @@ Ok, ok! Let's dive into it!
             sheets[name].enable;
         }for
     };
-    Sheethub.addListener('ready',callback);
+    if(Sheethub.isReady()){
+        callback();
+    }
+    else{
+        Sheethub.addListener('ready',callback);
+    }
 
 License
 -------

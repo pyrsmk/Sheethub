@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS API for polyfills
     
-    Version : 1.0a8
+    Version : 0.1.8a
     Author  : Aurélien Delogu <dev@dreamysource.fr>
     URL     : <https://github.com/pyrsmk/sheethub> 
     License : MIT
