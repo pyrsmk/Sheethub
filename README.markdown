@@ -123,10 +123,10 @@ Ok, ok! Let's dive into it!
             if(!sheets[name].isDisabled()){
                 sheets[name].disable;
             }
-            // convertToMediaQueries is just a dummy function
-            sheets[name].setContents(convertToMediaQueries(contents));
+            // parseContents is just a dummy function
+            sheets[name].setContents(parseContents(contents));
             // still a dummy function
-            sheets[name].setMedias(whichMediaQueries(contents));
+            sheets[name].setMedias(parseMedias(contents));
             sheets[name].enable;
         }for
     };
