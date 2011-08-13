@@ -66,7 +66,7 @@ There's other ways to instantiate Stylesheet, but we'll see this later.
 
 Remove a stylesheet:
 
-    Sheethub.addStylesheet('some stylesheet name');
+    Sheethub.removeStylesheet('some stylesheet name');
 
 ### The Stylesheet object
 
@@ -107,7 +107,7 @@ Media queries are emergent CSS properties which permit us to target specific med
 
 But, be careful, it will _not_ add the media queries behavior to Internet Explorer 6-8, it's just an overlayer API.
 
-As an addition, we can get CSS rules that the browser actually applies for the stylesheet. But, for now, this API is very incomplete.
+As an addition, we can get CSS rules that the browser actually applies for the stylesheet. But, for now, this API part is incomplete.
 
     sheet.getRules();
 

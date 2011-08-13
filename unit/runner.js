@@ -25,8 +25,9 @@ sink('Stylesheet object',function(test,ok,before,after){
     });
     
     test('Stylesheet contents',1,function(){
-        stylesheet.setContents('html{display:block}');
-        ok(stylesheet.getContents()=='html{display:block}',"is 'html{display:block}'");
+        var css='html{display:block}@font-face{font-family: "TEST"; src: url("test.eot") format("eot");}';
+        stylesheet.setContents(css);
+        ok(stylesheet.getContents()==css,"is 'html{display:block}'");
     });
     
     test('Media types support',3,function(){
