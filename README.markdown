@@ -1,5 +1,5 @@
-Sheethub 0.1.8a
-===============
+Sheethub 0.2.0
+==============
 
 Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS polyfills, making them work together.
 
@@ -37,7 +37,7 @@ Sheethub manages Stylesheet objects. Each one represents a stylesheet with trans
 
 All Stylesheet objects have a name. Basically, Stylesheet will take the node title as a name, otherwise it will generate one.
 
-That's said, here's the management methods. 
+That's said, here's the management methods.
 
 Return an array of Stylesheet objects:
 
@@ -61,7 +61,7 @@ Add a new stylesheet:
         }
     ');
     Sheethub.addStylesheet('some stylesheet name',sheet)
-    
+
 There's other ways to instantiate Stylesheet, but we'll see this later.
 
 Remove a stylesheet:
@@ -128,7 +128,7 @@ Ok, ok! Let's dive into it!
             // still a dummy function
             sheets[name].setMedias(parseMedias(contents));
             sheets[name].enable;
-        }for
+        }
     };
     if(Sheethub.isReady()){
         callback();

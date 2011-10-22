@@ -1,6 +1,6 @@
 {
     "JAVASCRIPT":{
-        "sheethub":["../sheethub.js"]
+        "sheethub":["../src/sheethub.js"]
     },
     "JSHINT_OPTS":{
         "boss"          : true,

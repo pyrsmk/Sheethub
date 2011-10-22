@@ -1,14 +1,15 @@
 /*
-    Sheethub, the CSS API for polyfills
-    
-    Version : 0.1.8a
-    Author  : Aurélien Delogu <dev@dreamysource.fr>
-    URL     : <https://github.com/pyrsmk/sheethub> 
+    Sheethub, the CSS backdoor library
+
+    Version : 0.2.0
+    Author  : Aurélien Delogu (dev@dreamysource.fr)
+    URL     : https://github.com/pyrsmk/Sheethub
     License : MIT
-    
+*/
+/*
     [ ] imports management
-    [ ] addRule/deleteRule/insertRule/removeRule
-    
+    [ ] humandocs normalization
+
     could be interesting: http://closure-library.googlecode.com/svn/docs/closure_goog_cssom_cssom.js.source.html
 */
 
@@ -16,22 +17,22 @@ var Sheethub={},
     Stylesheet;
 
 (function(window,document){
-    
+
     /*========================================================================
         Event manager
     ========================================================================*/
 
     function EventManager(){
-        
+
         // Array listeners: the listeners stack
         var listeners=[];
-        
+
         /*
             Adds a listener to the stack
-            
+
             String event        : the event to listen
             Function callback   : the callback to trigger
-            
+
             Returns             : EventManager
         */
         this.addListener=function(event,callback){
@@ -41,13 +42,13 @@ var Sheethub={},
             listeners[event].push(callback);
             return this;
         };
-        
+
         /*
             Removes a listener from the stack
-            
+
             String event        : the event from the listener must be removed
             Function callback   : the callback
-            
+
             Returns             : EventManager
         */
         this.removeListener=function(event,callback){
@@ -61,12 +62,12 @@ var Sheethub={},
             listeners[event]=subscribers;
             return this;
         };
-        
+
         /*
             Return the listeners for an event, or all
-            
+
             String event    : the event from which to return listeners
-            
+
             Returns         : Array, Object
         */
         this.getListeners=function(event){
@@ -74,22 +75,22 @@ var Sheethub={},
                    listeners[event]:
                    listeners;
         };
-        
+
         /*
             Clear the stack
-            
+
             Returns: EventManager
         */
         this.clearListeners=function(){
             listeners=[];
             return this;
         };
-        
+
         /*
             Dispatches an event
-            
+
             string event        : the event to trigger
-            
+
             Returns             : EventManager
         */
         this.dispatch=function(event){
@@ -99,34 +100,34 @@ var Sheethub={},
             }
             return this;
         };
-        
+
     }
-    
+
     /*========================================================================
         Stylesheet object
     ========================================================================*/
-    
+
     /*
         Constructor
-        
+
         DOMNode|string contents: a LINK node, a STYLE node or CSS rules
     */
     Stylesheet=function(contents){
-        
+
         // Boolean ready    : the init state
         var ready=false,
         // DOMNode node     : the DOM node of the stylesheet
             node,
         // EventManager events: the event manager
             events=new EventManager();
-        
+
         // Event manager overlay
         this.addListener=function(event,callback){return events.addListener(event,callback);};
         this.removeListener=function(event,callback){return events.removeListener(event,callback);};
         this.getListeners=function(event){return events.getListeners(event);};
         this.clearListeners=function(){return events.clearListeners();};
         var dispatch=function(event){return events.dispatch(event);};
-        
+
         /*
             Creates a new STYLE node and links with
         */
@@ -136,10 +137,10 @@ var Sheethub={},
             node.rel='stylesheet';
             document.getElementsByTagName('head')[0].appendChild(node);
         },
-        
+
          /*
             Returns the stylesheet object from the document.styleSheets API, with title matching
-            
+
             Returns: CSSStyleSheet
         */
         getCSSStyleSheet=function(){
@@ -152,12 +153,12 @@ var Sheethub={},
                 return node.styleSheet;
             }
         },
-        
+
         /*
             Returns a new XMLHttpRequest object
-            
+
             Returns: Object, false
-            
+
             Documentation: <http://blogs.msdn.com/b/xmlteam/archive/2006/10/23/using-the-right-version-of-msxml-in-internet-explorer.aspx>
         */
         getXHRObject=function(){
@@ -174,10 +175,10 @@ var Sheethub={},
             }
             return false;
         },
-        
+
         /*
             Retrieves remote stylesheet contents
-            
+
             String url  : the stylesheet URL
         */
         retrieveStylesheet=function(){
@@ -210,28 +211,28 @@ var Sheethub={},
             // Sends the request
             xhr.send(null);
         };
-        
+
         /*
             Verifies the init state
-            
+
             Returns: Boolean
         */
         this.isReady=function(){
             return ready;
         };
-        
+
         /*
             Verifies the node state
-            
+
             Returns: Boolean
         */
         this.isDetached=function(){
             return node===null;
         };
-        
+
         /*
             Detaches the object from the node and removes it
-            
+
             Returns: Stylesheet
         */
         this.detach=function(){
@@ -239,12 +240,12 @@ var Sheethub={},
             node=null;
             return this;
         };
-        
+
         /*
             Sets stylesheet contents
-            
+
             String contents : the contents
-            
+
             Return          : Stylesheet
         */
         this.setContents=function(contents){
@@ -267,10 +268,10 @@ var Sheethub={},
             }
             return this;
         };
-        
+
         /*
             Returns the stylesheet contents
-            
+
             Returns: String
         */
         this.getContents=function(){
@@ -279,22 +280,22 @@ var Sheethub={},
             }
             return node.text;
         };
-        
+
         /*
             Sets the media types list for the stylesheet
-            
+
             Array medias    : the media types list
-            
+
             Returns         : Stylesheet
         */
         this.setMedias=function(medias){
             node.media=medias.join(',');
             return this;
         };
-        
+
         /*
             Returns the media types list
-            
+
             Returns: Array
         */
         this.getMedias=function(){
@@ -304,12 +305,12 @@ var Sheethub={},
             }
             return medias;
         };
-        
+
         /*
             Adds a new media type to the existing list
-            
+
             String media    : the media type
-            
+
             Returns         : Stylesheet
         */
         this.addMedia=function(media){
@@ -318,12 +319,12 @@ var Sheethub={},
             this.setMedias(medias);
             return this;
         };
-        
+
         /*
             Removes a media type from the list
-            
+
             String media    : the media to remove
-            
+
             Returns         : Stylesheet
         */
         this.removeMedia=function(media){
@@ -337,53 +338,36 @@ var Sheethub={},
             this.setMedias(medias);
             return this;
         };
-        
-        /*
-            Get rules from the document.styleSheets API
-            
-            Returns: CSSRuleList
-        */
-        this.getRules=function(){
-            var cssstylesheet=getCSSStyleSheet();
-            // General browsers
-            if(cssstylesheet.cssRules){
-                return cssstylesheet.cssRules;
-            }
-            // IE
-            else{
-                return cssstylesheet.rules;
-            }
-        };
-        
+
         /*
             Verifies if the stylesheet is disabled or not
-            
+
             Returns: Boolean
         */
         this.isDisabled=function(){
             return getCSSStyleSheet().disabled;
         };
-        
+
         /*
             Enables the stylesheet
-            
+
             Returns: Stylesheet
         */
         this.enable=function(){
             getCSSStyleSheet().disabled=false;
             return this;
         };
-        
+
          /*
             Disables the stylesheet
-            
+
             Returns: Stylesheet
         */
         this.disable=function(){
             getCSSStyleSheet().disabled=true;
             return this;
         };
-        
+
         /*----------------------------------------
             Construction
         ----------------------------------------*/
@@ -404,13 +388,13 @@ var Sheethub={},
                 retrieveStylesheet();
             }
         }
-        
+
     };
-    
+
     /*========================================================================
         Sheethub object
     ========================================================================*/
-    
+
     // boolean ready: the init state (true when all native stylesheets are loaded)
     var ready=false,
     // Array stylesheets: the stylesheets
@@ -419,40 +403,40 @@ var Sheethub={},
         sheetsToLoad=0,
     // EventManager events: the event manager
         events=new EventManager();
-    
+
     // Event manager overlay
     Sheethub.addListener=function(event,callback){return events.addListener(event,callback);};
     Sheethub.removeListener=function(event,callback){return events.removeListener(event,callback);};
     Sheethub.getListeners=function(event){return events.getListeners(event);};
     Sheethub.clearListeners=function(){return events.clearListeners();};
     var dispatch=function(event){return events.dispatch(event);};
-    
+
     /*
         Verifies the init state
-        
+
         Returns: Boolean
     */
     Sheethub.isReady=function(){
         return ready;
     };
-    
+
     /*
         Verifies if a stylesheet is in the stylesheets
-        
-        String id: the stylesheet id 
-        
+
+        String id: the stylesheet id
+
         Returns: Array
     */
     Sheethub.hasStylesheet=function(id){
         return stylesheets[id]!==undefined;
     };
-    
+
     /*
         Adds a new stylesheet
 
-        String id               : the stylesheet id 
+        String id               : the stylesheet id
         Stylesheet stylesheet   : a Stylesheet object
-        
+
         Returns                 : Sheethub
         Throws an exception     : if the stylesheet already exists
                                 : if the stylesheet is not a Stylesheet object
@@ -468,12 +452,12 @@ var Sheethub={},
         stylesheets[id]=stylesheet;
         return this;
     };
-    
+
     /*
         Gets a stylesheet
-        
+
         String id           : the stylesheet id
-        
+
         Returns             : Stylesheet
         Throws an exception : if the stylesheet doesn't exist
     */
@@ -483,12 +467,12 @@ var Sheethub={},
         }
         return stylesheets[id];
     };
-    
+
     /*
         Removes a stylesheet from the stylesheets
-        
+
         String id           : the stylesheet id
-        
+
         Returns             : Sheethub
         Throws an exception : if the stylesheet doesn't exist
     */
@@ -500,16 +484,16 @@ var Sheethub={},
         delete stylesheets[id];
         return this;
     };
-    
+
     /*
         Gets all stylesheets
-        
+
         Returns: Array
     */
     Sheethub.getStylesheets=function(){
         return stylesheets;
     };
-    
+
     /*========================================================================
         Initializes the whole stuff
     ========================================================================*/
@@ -544,7 +528,7 @@ var Sheethub={},
             while(Sheethub.hasStylesheet(id='stylesheet'+Math.round(Math.random()*8999+1000))){}
         }
         // Add the stylesheet
-        stylesheets[id]=new Stylesheet(node);        
+        stylesheets[id]=new Stylesheet(node);
         // Watch the load state
         if(stylesheets[id].isReady()){
             callback();
@@ -553,5 +537,5 @@ var Sheethub={},
             stylesheets[id].addListener('ready',callback);
         }
     }
-    
+
 })(this,this.document);
