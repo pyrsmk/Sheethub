@@ -1,6 +1,6 @@
 {
     "JAVASCRIPT":{
-        "unit":["../unit/js/runner.js"]
+        "unit":["../unit/runner.js"]
     },
     "JSHINT_OPTS":{
         "boss"          : true,
