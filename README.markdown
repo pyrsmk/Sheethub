@@ -1,4 +1,4 @@
-Sheethub 0.2.0
+Sheethub 0.1.9
 ==============
 
 Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS polyfills, making them work together.
@@ -106,10 +106,6 @@ Media queries are emergent CSS properties which permit us to target specific med
     sheet.setMedias(['speech','braille','embossed']);
 
 But, be careful, it will _not_ add the media queries behavior to Internet Explorer 6-8, it's just an overlayer API.
-
-As an addition, we can get CSS rules that the browser actually applies for the stylesheet. But, for now, this API part is incomplete.
-
-    sheet.getRules();
 
 ### A concrete example please!
 
