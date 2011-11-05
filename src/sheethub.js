@@ -1,16 +1,16 @@
 /*
     Sheethub, the CSS backdoor library
 
-    Version : 0.1.9
-    Author  : Aurélien Delogu (dev@dreamysource.fr)
-    URL     : https://github.com/pyrsmk/Sheethub
-    License : MIT
+    Version     : 0.1.9
+    Author      : Aurélien Delogu (dev@dreamysource.fr)
+    Homepage    : https://github.com/pyrsmk/Sheethub
+    License     : MIT
 */
 /*
-    [ ] imports management
-    [ ] humandocs normalization
-
-    could be interesting: http://closure-library.googlecode.com/svn/docs/closure_goog_cssom_cssom.js.source.html
+    [/] imports support
+    [/] humandocs normalization
+    [ ] http://dev.w3.org/csswg/cssom/
+    [ ] http://www.quirksmode.org/dom/w3c_css.html
 */
 
 var Sheethub={},

@@ -1,7 +1,7 @@
 Sheethub 0.1.9
 ==============
 
-Sheethub is a CSS API, aiming to bring simplicity and centralization to CSS polyfills, making them work together.
+Sheethub is a CSS backdoor library, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself instead of using the `styleSheets` DOM method, then you'll be able to access to CSS rules that are not currently applied for incompatibility reason.
 
 - tiny  (less than 4k uglified)
 - robust (with a full unit-testing suite)
@@ -11,7 +11,6 @@ Remarks
 -------
 
 - Opera 9 and 10 seem to not support CSSStyleSheet.disabled properly, they always report the stylesheet as disabled even though is enabled, and disabling a stylesheet seems to not work too
-
 
 Documentation
 -------------
@@ -132,8 +131,3 @@ Ok, ok! Let's dive into it!
     else{
         Sheethub.addListener('ready',callback);
     }
-
-License
--------
-
-Sheethub is published under the MIT license (Expat version).
