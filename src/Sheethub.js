@@ -19,7 +19,7 @@ this.Sheethub=function(){
         getElementsByTagName='getElementsByTagName',
         removeChild='removeChild',
         parentNode='parentNode',
-        stylesheets=[],
+        stylesheets={},
         ready=false,
         listeners=[],
         sheetsToLoad=0,
@@ -63,6 +63,7 @@ this.Sheethub=function(){
             XMLHTTP='Msxml2.XMLHTTP.',
             responseText='responseText',
             xhr,
+            status='status',
             attempts=[
                 function(){return new win[ActiveXObject](XMLHTTP+'3.0');},
                 function(){return new win[ActiveXObject](XMLHTTP+'6.0');},
@@ -78,23 +79,6 @@ this.Sheethub=function(){
             node.rel='stylesheet';
             doc[getElementsByTagName]('head')[0][appendChild](node);
         },
-
-         /*
-            Return the stylesheet object from CSSOM API
-
-            Return
-                Object
-        */
-        getCSSStyleSheet=function(){
-            // General browsers
-            if(node.sheet!==undefined){
-                return node.sheet;
-            }
-            // IE
-            else{
-                return node.styleSheet;
-            }
-        },
         
         /*
             Stylesheet is now considered as ready
@@ -105,83 +89,82 @@ this.Sheethub=function(){
             while(i){
                 listeners[--i]();
             }
-        };
+        },
 
-        /*
-            Add a listener
+        Stylesheet={
             
-            Parameters
-                Function callback
-        */
-        Stylesheet.listen=function(callback){
-            listeners.push(callback);
-        };
+            /*
+                Add a listener
+                
+                Parameters
+                    Function callback
+            */
+            listen:function(callback){
+                listeners.push(callback);
+            },
 
-        /*
-            Verify init state
+            /*
+                Verify init state
 
-            Return
-                boolean
-        */
-        Stylesheet.isReady=function(){
-            return ready;
-        };
+                Return
+                    boolean
+            */
+            ready:function(){
+                return ready;
+            },
 
-        /*
-            Set stylesheet contents
-            
-            Parameters
-                string contents
-        */
-        Stylesheet.setContents=function(contents){
-            // Convert linked to embedded node
-            if(node.tagName=='LINK'){
-                node[parentNode][removeChild](node);
-                createNewNode();
-            }
-            // General browsers
-            try{
-                if(i=node.firstChild){
-                    node[removeChild](i);
+            /*
+                Set/get stylesheet contents
+                
+                Parameters
+                    string contents: if empty, the function will return current contents
+            */
+            contents:function(contents){
+                if(!contents){
+                    // General browsers
+                    if(node.textContent!==undefined){
+                        return node.textContent;
+                    }
+                    // IE
+                    return node.text;
                 }
-                node[appendChild](doc[createTextNode](contents));
+                else{
+                    // Convert linked to embedded node
+                    if(node.tagName=='LINK'){
+                        node[parentNode][removeChild](node);
+                        createNewNode();
+                    }
+                    // General browsers
+                    try{
+                        if(i=node.firstChild){
+                            node[removeChild](i);
+                        }
+                        node[appendChild](doc[createTextNode](contents));
+                    }
+                    // IE
+                    catch(e){
+                        node.text=contents;
+                    }
+                }
+            },
+
+            /*
+                Return the stylesheet node
+
+                Return
+                    Object
+            */
+            get:function(){
+                return node;
             }
-            // IE
-            catch(e){
-                node.text=contents;
-            }
-        };
-
-        /*
-            Return stylesheet contents
-
-            Return
-                string
-        */
-        Stylesheet.getContents=function(){
-            // General browsers
-            if(node.textContent!==undefined){
-                return node.textContent;
-            }
-            // IE
-            return node.text;
-        };
-
-        /*
-            Return the stylesheet node
-
-            Return
-                Object
-        */
-        Stylesheet.getNode=function(){
-            return node;
+        
         };
 
         /*---------------------------------
             Initialize the stylesheet
         ---------------------------------*/
 
-        if(typeof node=='object'){
+        if(typeof contents=='object'){
             // Set node
             node=contents;
             // Retrieve LINK stylesheet
@@ -194,12 +177,12 @@ this.Sheethub=function(){
                     }
                     catch(e){}
                 }
-                // We DON'T verify if the xhr is well loaded since it will rarely happened
+                // We WON'T verify if the xhr is well loaded since it will rarely failed
                 // Create request
                 xhr.open('GET',node.href,true);
                 xhr.onreadystatechange=function(){
                     if(xhr.readyState==4){
-                        if(xhr.status!=200 && xhr.status!=304){
+                        if(!!xhr[status] && xhr[status]!=200 && xhr[status]!=304){
                             throw xhr.statusText;
                         }
                         // Update contents
@@ -222,10 +205,11 @@ this.Sheethub=function(){
         else{
             createNewNode();
             if(typeof contents=='string'){
-                Stylesheet.setContents(contents);
+                Stylesheet.contents(contents);
             }
             complete();
         }
+        return Stylesheet;
 
     },
     
@@ -251,7 +235,7 @@ this.Sheethub=function(){
             Return
                 boolean
         */
-        isReady:function(){
+        ready:function(){
             return ready;
         },
 
@@ -304,7 +288,7 @@ this.Sheethub=function(){
         */
         remove:function(id){
             if(Sheethub.has(id)){
-                i=stylesheets[id].getNode();
+                i=stylesheets[id].get();
                 i[parentNode][removeChild](i);
                 delete stylesheets[id];
             }
@@ -348,12 +332,13 @@ this.Sheethub=function(){
         // Add the stylesheet
         Sheethub.add(id,node);
         // Watch the load state
-        if(stylesheets[id].isReady()){
+        if(stylesheets[id].ready()){
             callback();
         }
         else{
             stylesheets[id].listen(callback);
         }
     }
+    return Sheethub;
 
-};
+}();
