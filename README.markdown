@@ -9,10 +9,8 @@ Sheethub is a CSS backdoor library, with the aim of bringing simplicity and cent
 - robust: with a full unit testing suite
 - cross-browser: IE5.5-10, Chrome 4-12, FF2-4, Safari 3-5, Opera 9-11 (if it works on other browsers/versions, please tell me)
 
-Documentation
--------------
-
-### The ready state
+The ready state
+---------------
 
 Sheethub provides an event to inform that all native stylesheets have been retrieved. Here's how listen it:
 
@@ -24,7 +22,8 @@ But be careful. Depending on your code, Sheethub can be ready _before_ you've pl
         // ready!
     }
 
-### Managing stylesheets
+Managing stylesheets
+--------------------
 
 Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id. Basically, it will take the node title as a name, otherwise it will generate a numerical one.
 
@@ -53,7 +52,8 @@ Remove a stylesheet:
 
     Sheethub.remove('some stylesheet name');
 
-### The Stylesheet object
+Stylesheet objects
+------------------
 
 Stylesheet object provides some useful functions to interact with the stylesheet. Firstly, Stylesheet also has a ready state and can be listened with same way as we saw earlier with Sheethub, so you'll be able to know when you're new appended stylesheet will be loaded.
 
@@ -76,6 +76,7 @@ Anterior versions of Sheethub provided methods to interact with specific node at
         node.disabled=false;
     }
 
-### Sheethub scripts
+Sheethub scripts
+----------------
 
 Please share your [Sheethub scripts](https://github.com/pyrsmk/Sheethub/wiki/Awesome-scripts) with the community and let us know how they're awesome!
