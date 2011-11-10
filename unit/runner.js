@@ -21,7 +21,7 @@ domReady(function(){
             }
             ok(i==3,'has 3 loaded stylesheets');
             ok(Sheethub.get('desktop').contents()=="body{max-width:700px;margin-left:200px;}\n","'desktop' stylesheet has contents set");
-            ok(Sheethub.get('embedded').contents()=="body{max-width:none;margin-left:0;}a:after{content:' (' attr(href) ')';}","'embedded' stylesheet has contents set");
+            ok(Sheethub.get('embedded').contents().toLowerCase().replace(/\s+/g,'')=="body{max-width:none}","'embedded' stylesheet has contents set");
             // New stylesheet
             Sheethub.add('test','html{display:block}');
             ok(Sheethub.has('test'),"has added 'test' stylesheet");

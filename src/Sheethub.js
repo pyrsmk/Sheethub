@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor library
 
-    Version     : 0.2.0
+    Version     : 0.2.1
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -76,7 +76,7 @@ this.Sheethub=function(){
         createNewNode=function(){
             node=doc.createElement('style');
             //node.type='text/css';
-            node.rel='stylesheet';
+            //node.rel='stylesheet';
             doc[getElementsByTagName]('head')[0][appendChild](node);
         },
         
@@ -121,12 +121,7 @@ this.Sheethub=function(){
             */
             contents:function(contents){
                 if(!contents){
-                    // General browsers
-                    if(node.textContent!==undefined){
-                        return node.textContent;
-                    }
-                    // IE
-                    return node.text;
+                    return node.innerHTML || node.text;
                 }
                 else{
                     // Convert linked to embedded node
@@ -134,14 +129,10 @@ this.Sheethub=function(){
                         node[parentNode][removeChild](node);
                         createNewNode();
                     }
-                    // General browsers
+                    // Set contents
                     try{
-                        if(i=node.firstChild){
-                            node[removeChild](i);
-                        }
-                        node[appendChild](doc[createTextNode](contents));
+                        node.innerHTML=contents;
                     }
-                    // IE
                     catch(e){
                         node.text=contents;
                     }
@@ -186,14 +177,7 @@ this.Sheethub=function(){
                             throw xhr.statusText;
                         }
                         // Update contents
-                        try{
-                            // General browsers
-                            node[appendChild](doc[createTextNode](xhr[responseText]));
-                        }
-                        catch(e){
-                            // IE
-                            node.text=xhr[responseText];
-                        }
+                        Stylesheet.contents(xhr[responseText]);
                         // Load complete
                         complete();
                     }
