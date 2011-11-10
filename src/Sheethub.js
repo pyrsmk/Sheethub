@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor library
 
-    Version     : 0.2.2
+    Version     : 0.2.3
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -28,7 +28,7 @@ this.Sheethub=function(){
         links=doc[getElementsByTagName]('link'),
         styles=doc[getElementsByTagName]('style'),
         i,
-        id,
+        a,
         callback=function(){
             if(!--sheetsToLoad){
                 ready=true;
@@ -292,11 +292,13 @@ this.Sheethub=function(){
     ---------------------------------*/
 
     // Get linked stylesheets
-    i=links.length;
-    while(i){
-        nodes.push(links[--i]);
-        // One more to load!
-        ++sheetsToLoad;
+    i=-1;
+    while(a=links[++i]){
+        if(a.getAttribute('rel')!='icon'){
+            nodes.push(a);
+            // One more to load!
+            ++sheetsToLoad;
+        }
     }
     // Get embedded stylesheets
     i=styles.length;
@@ -306,18 +308,18 @@ this.Sheethub=function(){
     // Create Stylesheet objects
     i=-1;
     while(node=nodes[++i]){
-        // Get the stylesheet title or create one
-        if((id=node.title)==='' || Sheethub.has(id)){
-            while(Sheethub.has(id=Math.round(Math.random()*89+10))){}
+        // Get the stylesheet title as id or create one
+        if((a=node.title)==='' || Sheethub.has(a)){
+            while(Sheethub.has(a=Math.round(Math.random()*89+10))){}
         }
         // Add the stylesheet
-        Sheethub.add(id,node);
+        Sheethub.add(a,node);
         // Watch the load state
-        if(stylesheets[id].ready()){
+        if(stylesheets[a].ready()){
             callback();
         }
         else{
-            stylesheets[id].listen(callback);
+            stylesheets[a].listen(callback);
         }
     }
     return Sheethub;
