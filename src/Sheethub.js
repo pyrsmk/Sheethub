@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor library
 
-    Version     : 0.2.1
+    Version     : 0.2.2
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -74,10 +74,7 @@ this.Sheethub=function(){
             Create a new STYLE node
         */
         createNewNode=function(){
-            node=doc.createElement('style');
-            //node.type='text/css';
-            //node.rel='stylesheet';
-            doc[getElementsByTagName]('head')[0][appendChild](node);
+            doc[getElementsByTagName]('head')[0][appendChild](node=doc.createElement('style'));
         },
         
         /*
@@ -176,8 +173,8 @@ this.Sheethub=function(){
                         if(!!xhr[status] && xhr[status]!=200 && xhr[status]!=304){
                             throw xhr.statusText;
                         }
-                        // Update contents
-                        Stylesheet.contents(xhr[responseText]);
+                        // Change CSS scope and update contents
+                        Stylesheet.contents(xhr[responseText].replace(/\.\.\//g,''));
                         // Load complete
                         complete();
                     }
