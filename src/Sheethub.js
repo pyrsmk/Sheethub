@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor library
 
-    Version     : 0.2.3
+    Version     : 0.2.4
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -294,7 +294,7 @@ this.Sheethub=function(){
     // Get linked stylesheets
     i=-1;
     while(a=links[++i]){
-        if(a.getAttribute('rel')!='icon'){
+        if(a.rel!='icon'){
             nodes.push(a);
             // One more to load!
             ++sheetsToLoad;
