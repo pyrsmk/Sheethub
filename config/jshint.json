@@ -1,5 +1,6 @@
 {
     "browser"   : true,
+    "predef"    : ["ActiveXObject"],
     "boss"      : true,
     "curly"     : true,
     "eqnull"    : true,

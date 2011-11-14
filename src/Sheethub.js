@@ -1,16 +1,10 @@
 /*
-    Sheethub, the CSS backdoor library
+    Sheethub, the CSS backdoor API
 
-    Version     : 0.2.4
+    Version     : 0.3.0
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
-*/
-/*
-    [/] refactoring
-    [/] imports support
-    [ ] http://dev.w3.org/csswg/cssom/
-    [ ] http://www.quirksmode.org/dom/w3c_css.html
 */
 
 this.Sheethub=function(){
@@ -27,8 +21,8 @@ this.Sheethub=function(){
         nodes=[],
         links=doc[getElementsByTagName]('link'),
         styles=doc[getElementsByTagName]('style'),
-        i,
         a,
+        b,
         callback=function(){
             if(!--sheetsToLoad){
                 ready=true;
@@ -52,29 +46,22 @@ this.Sheethub=function(){
     Stylesheet=function(contents){
 
         var node,
+            head=doc[getElementsByTagName]('head')[0],
             ready=false,
             listeners=[],
-            i,
-            disabled='disabled',
             appendChild='appendChild',
-            createTextNode='createTextNode',
-            win=window,
-            ActiveXObject='ActiveXObject',
-            XMLHTTP='Msxml2.XMLHTTP.',
-            responseText='responseText',
-            xhr,
-            status='status',
-            attempts=[
-                function(){return new win[ActiveXObject](XMLHTTP+'3.0');},
-                function(){return new win[ActiveXObject](XMLHTTP+'6.0');},
-                function(){return new win.XMLHttpRequest();}
-            ],
+            styleSheet='styleSheet',
+            a,
 
         /*
             Create a new STYLE node
         */
         createNewNode=function(){
-            doc[getElementsByTagName]('head')[0][appendChild](node=doc.createElement('style'));
+            head[appendChild](node=doc.createElement('style'));
+            // IE doesn't support creating a text node into a STYLE block
+            if(!node[styleSheet]){
+                node[appendChild](doc.createTextNode(''));
+            }
         },
         
         /*
@@ -82,9 +69,9 @@ this.Sheethub=function(){
         */
         complete=function(){
             ready=true;
-            i=listeners.length;
-            while(i){
-                listeners[--i]();
+            a=listeners.length;
+            while(a){
+                listeners[--a]();
             }
         },
 
@@ -118,20 +105,29 @@ this.Sheethub=function(){
             */
             contents:function(contents){
                 if(!contents){
-                    return node.innerHTML || node.text;
+                    // IE
+                    if(node[styleSheet]){
+                        return node[styleSheet].cssText;
+                    }
+                    // Other browsers
+                    else{
+                        return node.innerHTML;
+                    }
                 }
                 else{
-                    // Convert linked to embedded node
-                    if(node.tagName=='LINK'){
-                        node[parentNode][removeChild](node);
-                        createNewNode();
+                    // IE
+                    if(node[styleSheet]){
+                        node[styleSheet].cssText=contents;
                     }
-                    // Set contents
-                    try{
-                        node.innerHTML=contents;
-                    }
-                    catch(e){
-                        node.text=contents;
+                    // Other browsers
+                    else{
+                        // Convert linked to embedded node
+                        if(node.tagName=='LINK'){
+                            node[parentNode][removeChild](node);
+                            createNewNode();
+                        }
+                        // Because innerHTML fails on Safari 3/4 and perhaps other browsers
+                        node.firstChild.nodeValue=contents;
                     }
                 }
             },
@@ -146,50 +142,54 @@ this.Sheethub=function(){
                 return node;
             }
         
-        };
+        },
 
         /*---------------------------------
             Initialize the stylesheet
         ---------------------------------*/
-
-        if(typeof contents=='object'){
-            // Set node
-            node=contents;
-            // Retrieve LINK stylesheet
-            if(node.tagName=='LINK'){
-                // Retrieve XHR object
-                i=attempts.length;
-                while(i){
-                    try{
-                        xhr=attempts[--i]();
-                    }
-                    catch(e){}
-                }
-                // We WON'T verify if the xhr is well loaded since it will rarely failed
-                // Create request
-                xhr.open('GET',node.href,true);
-                xhr.onreadystatechange=function(){
-                    if(xhr.readyState==4){
-                        if(!!xhr[status] && xhr[status]!=200 && xhr[status]!=304){
-                            throw xhr.statusText;
+        
+        isDOMReady=function(){
+            if(head){
+                if(typeof contents=='object'){
+                    // Set node
+                    node=contents;
+                    // Retrieve LINK stylesheet
+                    if(node.tagName=='LINK'){
+                        // Retrieve XHR object
+                        if(this.XMLHttpRequest){
+                            a=new XMLHttpRequest();
                         }
-                        // Change CSS scope and update contents
-                        Stylesheet.contents(xhr[responseText].replace(/\.\.\//g,''));
-                        // Load complete
-                        complete();
+                        else{
+                            a=new ActiveXObject('Microsoft.XMLHTTP');
+                        }
+                        // Create ajax request
+                        a.open('GET',node.href,true);
+                        a.onreadystatechange=function(){
+                            if(a.readyState==4){
+                                // Change CSS scope and update contents
+                                Stylesheet.contents(a.responseText.replace(/\.\.\//g,''));
+                                // Load complete
+                                complete();
+                            }
+                        };
+                        a.send(null);
                     }
-                };
-                // Sends the request
-                xhr.send(null);
+                }
+                else{
+                    createNewNode();
+                    if(typeof contents=='string'){
+                        Stylesheet.contents(contents);
+                    }
+                    complete();
+                }
             }
-        }
-        else{
-            createNewNode();
-            if(typeof contents=='string'){
-                Stylesheet.contents(contents);
+            else{
+                setTimeout(isDOMReady,250);
             }
-            complete();
-        }
+        };
+        
+        isDOMReady();
+        
         return Stylesheet;
 
     },
@@ -269,8 +269,8 @@ this.Sheethub=function(){
         */
         remove:function(id){
             if(Sheethub.has(id)){
-                i=stylesheets[id].get();
-                i[parentNode][removeChild](i);
+                a=stylesheets[id].get();
+                a[parentNode][removeChild](a);
                 delete stylesheets[id];
             }
         },
@@ -292,34 +292,34 @@ this.Sheethub=function(){
     ---------------------------------*/
 
     // Get linked stylesheets
-    i=-1;
-    while(a=links[++i]){
-        if(a.rel!='icon'){
-            nodes.push(a);
+    a=-1;
+    while(b=links[++a]){
+        if(b.rel!='icon'){
+            nodes.push(b);
             // One more to load!
             ++sheetsToLoad;
         }
     }
     // Get embedded stylesheets
-    i=styles.length;
-    while(i){
-        nodes.push(styles[--i]);
+    a=styles.length;
+    while(a){
+        nodes.push(styles[--a]);
     }
     // Create Stylesheet objects
-    i=-1;
-    while(node=nodes[++i]){
-        // Get the stylesheet title as id or create one
-        if((a=node.title)==='' || Sheethub.has(a)){
-            while(Sheethub.has(a=Math.round(Math.random()*89+10))){}
+    a=-1;
+    while(node=nodes[++a]){
+        // Get the stylesheet name
+        if(!(b=node.title)){
+            b=node.href.match(/([^\/]+)\.css$/)[1];
         }
         // Add the stylesheet
-        Sheethub.add(a,node);
+        Sheethub.add(b,node);
         // Watch the load state
-        if(stylesheets[a].ready()){
+        if(stylesheets[b].ready()){
             callback();
         }
         else{
-            stylesheets[a].listen(callback);
+            stylesheets[b].listen(callback);
         }
     }
     return Sheethub;

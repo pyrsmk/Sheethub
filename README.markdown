@@ -1,9 +1,9 @@
-Sheethub 0.2.4
+Sheethub 0.3.0
 ==============
 
-__MAJOR UPDATE, NOT COMPATIBLE AT ALL WITH 0.1.x BECAUSE IT HAS BEEN CONSIDERABLY SIMPLIFIED, PLEASE READ THE NEW DOCUMENTATION!__
+__SHEETHUB IS NOW CONSIDERED AS STABLE AND SO CAN BE USED IN PRODUCTION__
 
-Sheethub is a CSS backdoor library, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
+Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
 
 - tiny: less than 2k uglified
 - robust: with a full unit testing suite
@@ -25,7 +25,7 @@ But be careful. Depending on your code, Sheethub can be ready _before_ you've pl
 Managing stylesheets
 --------------------
 
-Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id. Basically, it will take the node title as a name, otherwise it will generate a numerical one.
+Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id determined by the node's `title` attribute, or the filename from the `href` attribute otherwise.
 
 Get all stylesheet objects:
 

@@ -1,6 +1,6 @@
 html{
     background:#FFFFD4;
-    color:#111;
+    color:#111111;
 }
 h1,#footer{
     font-family:verdana;
@@ -15,7 +15,7 @@ h1{
 }
 h2{
     color:#FFFFD4;
-    background:#111;
+    background:#111111;
     border-radius:5px;
     padding:0.1em;
     padding-left:0.3em;
@@ -28,7 +28,7 @@ h3{
     text-align:center;
     margin:2em 0;
     color:#FFFFD4;
-    background:#111;
+    background:#111111;
     border-radius:5px;
     padding:0.1em;
 }
