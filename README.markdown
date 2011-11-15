@@ -1,13 +1,13 @@
-Sheethub 0.3.0
+Sheethub 0.4.0
 ==============
 
 __SHEETHUB IS NOW CONSIDERED AS STABLE AND SO CAN BE USED IN PRODUCTION__
 
 Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
 
-- tiny: less than 2k uglified
+- tiny: 1.5k uglified
 - robust: with a full unit testing suite
-- cross-browser: IE5.5-10, Chrome 4-12, FF2-4, Safari 3-5, Opera 9-11 (if it works on other browsers/versions, please tell me)
+- cross-browser: IE5.5+, Chrome, Firefox 2+, Safari 3+, Opera 9+ (if it works on other browsers/versions, please tell me)
 
 The ready state
 ---------------
@@ -29,7 +29,7 @@ Sheethub manages Stylesheet internal objects. Each one represents a stylesheet w
 
 Get all stylesheet objects:
 
-    Sheethub.getAll();
+    Sheethub.get();
 
 Get only one Stylesheet object:
 
@@ -61,15 +61,15 @@ The most interesting part of the API is the hability to set/get CSS contents:
 
     var sheet=Sheethub.get('pinky');
     // Get contents
-    if(sheet.contents()=='*{color:pink}'){
+    if(sheet.get()=='*{color:pink}'){
         // Set contents
-        sheet.contents('*{color:brown}');
+        sheet.set('*{color:brown}');
     }
 
 Anterior versions of Sheethub provided methods to interact with specific node attributes. All of these have been removed but they're still accessible by the stylesheet node:
 
     // Return the attached node
-    var node=sheet.get();
+    var node=sheet.node();
     // Verify if the stylesheet is disabled
     if(node.disabled){
         // Enable it
