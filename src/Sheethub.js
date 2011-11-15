@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.3.0
+    Version     : 0.4.0
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -11,6 +11,7 @@ this.Sheethub=function(){
     
     var doc=document,
         getElementsByTagName='getElementsByTagName',
+        head=doc[getElementsByTagName]('head')[0],
         removeChild='removeChild',
         parentNode='parentNode',
         stylesheets={},
@@ -46,7 +47,6 @@ this.Sheethub=function(){
     Stylesheet=function(contents){
 
         var node,
-            head=doc[getElementsByTagName]('head')[0],
             ready=false,
             listeners=[],
             appendChild='appendChild',
@@ -98,37 +98,42 @@ this.Sheethub=function(){
             },
 
             /*
-                Set/get stylesheet contents
+                Set stylesheet contents
                 
                 Parameters
-                    string contents: if empty, the function will return current contents
+                    string contents
             */
-            contents:function(contents){
-                if(!contents){
-                    // IE
-                    if(node[styleSheet]){
-                        return node[styleSheet].cssText;
-                    }
-                    // Other browsers
-                    else{
-                        return node.innerHTML;
-                    }
+            set:function(contents){
+                // IE
+                if(node[styleSheet]){
+                    node[styleSheet].cssText=contents;
                 }
+                // Other browsers
                 else{
-                    // IE
-                    if(node[styleSheet]){
-                        node[styleSheet].cssText=contents;
+                    // Convert linked to embedded node
+                    if(node.tagName=='LINK'){
+                        node[parentNode][removeChild](node);
+                        createNewNode();
                     }
-                    // Other browsers
-                    else{
-                        // Convert linked to embedded node
-                        if(node.tagName=='LINK'){
-                            node[parentNode][removeChild](node);
-                            createNewNode();
-                        }
-                        // Because innerHTML fails on Safari 3/4 and perhaps other browsers
-                        node.firstChild.nodeValue=contents;
-                    }
+                    // Because innerHTML fails on Safari 3/4 and perhaps other browsers
+                    node.firstChild.nodeValue=contents;
+                }
+            },
+            
+            /*
+                Get stylesheet contents
+                
+                Return
+                    string
+            */
+            get:function(contents){
+                // IE
+                if(node[styleSheet]){
+                    return node[styleSheet].cssText;
+                }
+                // Other browsers
+                else{
+                    return node.innerHTML;
                 }
             },
 
@@ -138,7 +143,7 @@ this.Sheethub=function(){
                 Return
                     Object
             */
-            get:function(){
+            node:function(){
                 return node;
             }
         
@@ -167,7 +172,7 @@ this.Sheethub=function(){
                         a.onreadystatechange=function(){
                             if(a.readyState==4){
                                 // Change CSS scope and update contents
-                                Stylesheet.contents(a.responseText.replace(/\.\.\//g,''));
+                                Stylesheet.set(a.responseText.replace(/\.\.\//g,''));
                                 // Load complete
                                 complete();
                             }
@@ -178,7 +183,7 @@ this.Sheethub=function(){
                 else{
                     createNewNode();
                     if(typeof contents=='string'){
-                        Stylesheet.contents(contents);
+                        Stylesheet.set(contents);
                     }
                     complete();
                 }
@@ -247,7 +252,7 @@ this.Sheethub=function(){
         },
 
         /*
-            Get a stylesheet
+            Get one stylesheet or all
 
             Parameters
                 string id   : stylesheet id
@@ -256,6 +261,9 @@ this.Sheethub=function(){
                 Stylesheet
         */
         get:function(id){
+            if(!id){
+                return stylesheets;
+            }
             if(Sheethub.has(id)){
                 return stylesheets[id];
             }
@@ -269,20 +277,10 @@ this.Sheethub=function(){
         */
         remove:function(id){
             if(Sheethub.has(id)){
-                a=stylesheets[id].get();
+                a=stylesheets[id].node();
                 a[parentNode][removeChild](a);
                 delete stylesheets[id];
             }
-        },
-
-        /*
-            Get all stylesheets
-
-            Return
-                Array
-        */
-        getAll:function(){
-            return stylesheets;
         }
     
     };
