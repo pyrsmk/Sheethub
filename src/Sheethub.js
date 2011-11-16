@@ -1,13 +1,13 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.4.2
+    Version     : 0.4.3
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
     
-    O.5.O
-        [ ] do NOT retrieve all stylesheets at start but get it when needed
+    Future versions
+    
         [ ] Stylesheet.init(url): download the stylesheet even it doesn't exist as node
 */
 
@@ -46,13 +46,14 @@ this.Sheethub=function(){
         Create a new stylesheet
 
         Parameters
-            Object, string contents: a LINK node, a STYLE node or CSS rules
+            Object, string stylesheet: a LINK node, a STYLE node or CSS rules
     */
-    Stylesheet=function(contents){
+    Stylesheet=function(stylesheet){
 
         var node,
             ready=false,
             listeners=[],
+            contents,
             appendChild='appendChild',
             styleSheet='styleSheet',
             a,
@@ -105,9 +106,9 @@ this.Sheethub=function(){
                 Set stylesheet contents
                 
                 Parameters
-                    string contents
+                    string text
             */
-            set:function(contents){
+            set:function(text){
                 // Convert linked to embedded node
                 if(node.tagName=='LINK'){
                     node[parentNode][removeChild](node);
@@ -115,13 +116,14 @@ this.Sheethub=function(){
                 }
                 // IE
                 if(node[styleSheet]){
-                    node[styleSheet].cssText=contents;
+                    node[styleSheet].cssText=text;
                 }
                 // Other browsers
                 else{
                     // innerHTML fails on Safari 3/4 and perhaps other browsers
-                    node.firstChild.nodeValue=contents;
+                    node.firstChild.nodeValue=text;
                 }
+                contents=text;
             },
             
             /*
@@ -130,15 +132,8 @@ this.Sheethub=function(){
                 Return
                     string
             */
-            get:function(contents){
-                // IE
-                if(node[styleSheet]){
-                    return node[styleSheet].cssText;
-                }
-                // Other browsers
-                else{
-                    return node.innerHTML;
-                }
+            get:function(){
+                return contents;
             },
 
             /*
@@ -159,9 +154,9 @@ this.Sheethub=function(){
         
         isDOMReady=function(){
             if(head){
-                if(typeof contents=='object'){
+                if(typeof stylesheet=='object'){
                     // Set node
-                    node=contents;
+                    node=stylesheet;
                     // Retrieve LINK stylesheet
                     if(node.tagName=='LINK'){
                         // Retrieve XHR object
@@ -175,19 +170,26 @@ this.Sheethub=function(){
                         a.open('GET',node.href,true);
                         a.onreadystatechange=function(){
                             if(a.readyState==4){
-                                // Change CSS scope and update contents
-                                Stylesheet.set(a.responseText.replace(/\.\.\//g,''));
-                                // Load complete
+                                // Change CSS scope and save contents
+                                contents=a.responseText.replace(/\.\.\//g,'');
+                                // Loading complete
                                 complete();
                             }
                         };
                         a.send(null);
                     }
+                    // Get native STYLE contents
+                    else{
+                        contents=
+                            node[styleSheet]?
+                            node[styleSheet].cssText:
+                            node.innerHTML;
+                    }
                 }
                 else{
                     createNewNode();
-                    if(typeof contents=='string'){
-                        Stylesheet.set(contents);
+                    if(typeof stylesheet=='string'){
+                        Stylesheet.set(stylesheet);
                     }
                     complete();
                 }
