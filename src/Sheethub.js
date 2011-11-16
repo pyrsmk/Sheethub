@@ -1,10 +1,14 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.4.1
+    Version     : 0.4.2
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
+    
+    O.5.O
+        [ ] do NOT retrieve all stylesheets at start but get it when needed
+        [ ] Stylesheet.init(url): download the stylesheet even it doesn't exist as node
 */
 
 this.Sheethub=function(){
@@ -104,18 +108,18 @@ this.Sheethub=function(){
                     string contents
             */
             set:function(contents){
+                // Convert linked to embedded node
+                if(node.tagName=='LINK'){
+                    node[parentNode][removeChild](node);
+                    createNewNode();
+                }
                 // IE
                 if(node[styleSheet]){
                     node[styleSheet].cssText=contents;
                 }
                 // Other browsers
                 else{
-                    // Convert linked to embedded node
-                    if(node.tagName=='LINK'){
-                        node[parentNode][removeChild](node);
-                        createNewNode();
-                    }
-                    // Because innerHTML fails on Safari 3/4 and perhaps other browsers
+                    // innerHTML fails on Safari 3/4 and perhaps other browsers
                     node.firstChild.nodeValue=contents;
                 }
             },

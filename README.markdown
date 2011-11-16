@@ -1,4 +1,4 @@
-Sheethub 0.4.1
+Sheethub 0.4.2
 ==============
 
 __SHEETHUB IS NOW CONSIDERED AS STABLE AND SO CAN BE USED IN PRODUCTION__
