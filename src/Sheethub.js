@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.4.0
+    Version     : 0.4.1
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -307,7 +307,7 @@ this.Sheethub=function(){
     a=-1;
     while(node=nodes[++a]){
         // Get the stylesheet name
-        if(!(b=node.title)){
+        if(!(b=node.title) && node.href){
             b=node.href.match(/([^\/]+)\.css$/)[1];
         }
         // Add the stylesheet

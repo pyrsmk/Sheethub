@@ -1,4 +1,4 @@
-Sheethub 0.4.0
+Sheethub 0.4.1
 ==============
 
 __SHEETHUB IS NOW CONSIDERED AS STABLE AND SO CAN BE USED IN PRODUCTION__
@@ -79,4 +79,4 @@ Anterior versions of Sheethub provided methods to interact with specific node at
 Sheethub scripts
 ----------------
 
-Please share your [Sheethub scripts](https://github.com/pyrsmk/Sheethub/wiki/Awesome-scripts) with the community and let us know how they're awesome!
+You want to share your Sheethub script with the community? So do a pull request and place into `scripts` directory ;)
