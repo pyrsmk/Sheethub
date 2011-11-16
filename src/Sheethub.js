@@ -314,14 +314,16 @@ this.Sheethub=function(){
         if(!(b=node.title) && node.href){
             b=node.href.match(/([^\/]+)\.css$/)[1];
         }
-        // Add the stylesheet
-        Sheethub.add(b,node);
-        // Watch the load state
-        if(stylesheets[b].ready()){
-            callback();
-        }
-        else{
-            stylesheets[b].listen(callback);
+        if(b){
+            // Add the stylesheet
+            Sheethub.add(b,node);
+            // Watch the load state
+            if(stylesheets[b].ready()){
+                callback();
+            }
+            else{
+                stylesheets[b].listen(callback);
+            }
         }
     }
     return Sheethub;
