@@ -79,4 +79,6 @@ Anterior versions of Sheethub provided methods to interact with specific node at
 Sheethub scripts
 ----------------
 
-You want to share your Sheethub script with the community? So do a pull request and place into `scripts` directory ;)
+- [media-queries](https://github.com/pyrsmk/Sheethub/tree/master/scripts/mqs)
+
+You want to share your Sheethub script with the community? So do a pull request and place into `scripts` directory. A Sheethub script mus provide, at least, your minified script and a minified+Sheethub version (for those who want to use directly your script).
