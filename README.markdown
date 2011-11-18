@@ -12,7 +12,7 @@ Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centrali
 Awesome scripts
 ---------------
 
-- [mediatizr](https://github.com/pyrsmk/mediatizr): adds media queries support to non capable browsers
+- [mediatizr](https://github.com/pyrsmk/mediatizr): adds media queries support to incapable browsers
 
 If you developed a Sheethub script, please add it to the list ;)
 
