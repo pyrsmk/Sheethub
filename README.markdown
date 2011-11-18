@@ -9,8 +9,17 @@ Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centrali
 - robust: with a full unit testing suite
 - cross-browser: IE5.5+, Chrome, Firefox 2+, Safari 3+, Opera 9+ (if it works on other browsers/versions, please tell me)
 
-The ready state
+Awesome scripts
 ---------------
+
+- [mqs](https://github.com/pyrsmk/Sheethub/tree/master/scripts/mqs): add media queries support to non capable browsers
+
+You want to share your Sheethub script with the community? So do a pull request and place into `scripts` directory. A Sheethub script mus provide, at least, your minified script and a minified+Sheethub version (for those who want to use directly your script).
+
+Developping scripts
+-------------------
+
+### The ready state
 
 Sheethub provides an event to inform that all native stylesheets have been retrieved. Here's how listen it:
 
@@ -22,8 +31,7 @@ But be careful. Depending on your code, Sheethub can be ready _before_ you've pl
         // ready!
     }
 
-Managing stylesheets
---------------------
+### Managing stylesheets
 
 Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id determined by the node's `title` attribute, or the filename from the `href` attribute otherwise.
 
@@ -52,8 +60,7 @@ Remove a stylesheet:
 
     Sheethub.remove('some stylesheet name');
 
-Stylesheet objects
-------------------
+### Stylesheet objects
 
 Stylesheet object provides some useful functions to interact with the stylesheet. Firstly, Stylesheet also has a ready state and can be listened with same way as we saw earlier with Sheethub, so you'll be able to know when you're new appended stylesheet will be loaded.
 
@@ -75,10 +82,3 @@ Anterior versions of Sheethub provided methods to interact with specific node at
         // Enable it
         node.disabled=false;
     }
-
-Sheethub scripts
-----------------
-
-- [media-queries](https://github.com/pyrsmk/Sheethub/tree/master/scripts/mqs)
-
-You want to share your Sheethub script with the community? So do a pull request and place into `scripts` directory. A Sheethub script mus provide, at least, your minified script and a minified+Sheethub version (for those who want to use directly your script).
