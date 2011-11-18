@@ -14,7 +14,7 @@ Awesome scripts
 
 - [mqs](https://github.com/pyrsmk/Sheethub/tree/master/scripts/mqs): add media queries support to non capable browsers
 
-You want to share your Sheethub script with the community? So do a pull request and place into `scripts` directory. A Sheethub script mus provide, at least, your minified script and a minified+Sheethub version (for those who want to use directly your script).
+You want to share your Sheethub script with the community? So do a pull request and place your script into the `scripts` directory. A Sheethub script must provide, at least, your minified file and a minified+Sheethub version.
 
 Developping scripts
 -------------------
