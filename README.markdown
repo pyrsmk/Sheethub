@@ -9,8 +9,8 @@ Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centrali
 - robust: with a full unit testing suite
 - cross-browser: IE5.5+, Chrome, Firefox 2+, Safari 3+, Opera 9+ (if it works on other browsers/versions, please tell me)
 
-Awesome scripts
----------------
+Sheethub scripts
+----------------
 
 - [mediatizr](https://github.com/pyrsmk/mediatizr): adds media queries support to incapable browsers
 
@@ -33,7 +33,7 @@ But be careful. Depending on your code, Sheethub can be ready _before_ you've pl
 
 ### Managing stylesheets
 
-Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id determined by the node's `title` attribute, or the filename from the `href` attribute otherwise.
+Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id determined by the node's `title` attribute, or the filename from the `href` attribute otherwise. But, there's one case where Sheethub won't manage a stylesheet. Let's say you had a `STYLE` stylesheet to your page, without any title. Then, Sheethub can't guess an id for that stylesheet, unlike with `LINK` stylesheets (which have a `href` attribute).
 
 Get all stylesheet objects:
 
