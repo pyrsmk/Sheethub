@@ -1,7 +1,5 @@
-Sheethub 0.4.3
+Sheethub 0.4.4
 ==============
-
-__SHEETHUB IS NOW CONSIDERED AS STABLE AND SO CAN BE USED IN PRODUCTION__
 
 Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
 
@@ -14,7 +12,7 @@ Sheethub scripts
 
 - [mediatizr](https://github.com/pyrsmk/mediatizr): adds media queries support to incapable browsers
 
-If you developed a Sheethub script, please add it to the list ;)
+If you developed a Sheethub script, feel free to add it to the list ;)
 
 Developping scripts
 -------------------
