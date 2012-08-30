@@ -1,4 +1,4 @@
-Sheethub 0.4.4
+Sheethub 0.5.0
 ==============
 
 Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
@@ -31,7 +31,7 @@ But be careful. Depending on your code, Sheethub can be ready _before_ you've pl
 
 ### Managing stylesheets
 
-Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet objects have an id determined by the node's `title` attribute, or the filename from the `href` attribute otherwise. But, there's one case where Sheethub won't manage a stylesheet. Let's say you had a `STYLE` stylesheet to your page, without any title. Then, Sheethub can't guess an id for that stylesheet, unlike with `LINK` stylesheets (which have a `href` attribute).
+Sheethub manages Stylesheet internal objects. Each one represents a stylesheet with transparent management across browsers specifications and different DOM nodes. All Stylesheet object names are determined by the `title` attribute of the CSS link tag. If no `title` is specified then the name will be randomized.
 
 Get all stylesheet objects:
 
@@ -53,7 +53,7 @@ Add a new stylesheet:
     Sheethub.add('foo');
     // Plug to an existing STYLE node (that you've previously created)
     Sheethub.add('foo',node);
-    
+
 Remove a stylesheet:
 
     Sheethub.remove('some stylesheet name');

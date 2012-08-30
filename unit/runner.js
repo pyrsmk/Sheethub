@@ -1,5 +1,5 @@
 sink('Sheethub',function(test,ok,before,after){
-    
+
     test('Events',2,function(){
         var callback1=function(){ok(true," event dispatched to callback1");};
         var callback2=function(){ok(true," event dispatched to callback2");};
@@ -12,15 +12,14 @@ sink('Sheethub',function(test,ok,before,after){
             Sheethub.listen(callback2);
         }
     });
-    
-    test('Stylesheets',8,function(){
+
+    test('Stylesheets',7,function(){
         // Already set stylesheets
         var i=0;
         for(var j in Sheethub.get()){
             ++i;
         }
         ok(i==3,'has 3 loaded stylesheets');
-        ok(Sheethub.has('mobile'),"Has 'mobile' stylesheet");
         ok(Sheethub.get('desktop').get(),"'desktop' stylesheet has contents set");
         ok(Sheethub.get('embedded').get(),"'embedded' stylesheet has contents set");
         // New stylesheet

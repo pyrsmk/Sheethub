@@ -1,18 +1,17 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.4.4
+    Version     : 0.5.0
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
-    
-    Future versions
-    
-        [ ] Stylesheet.init(url): download the stylesheet even it doesn't exist as node
+
+    TODO
+        Stylesheet.init(url): download the stylesheet even it doesn't exist as a node
 */
 
 this.Sheethub=function(){
-    
+
     var doc=document,
         getElementsByTagName='getElementsByTagName',
         head=doc[getElementsByTagName]('head')[0],
@@ -37,11 +36,11 @@ this.Sheethub=function(){
                 }
             }
         },
-    
+
     /*========================================================================
         Stylesheet object
     ========================================================================*/
-    
+
     /*
         Create a new stylesheet
 
@@ -68,7 +67,7 @@ this.Sheethub=function(){
                 node[appendChild](doc.createTextNode(''));
             }
         },
-        
+
         /*
             Stylesheet is now considered as ready
         */
@@ -81,10 +80,10 @@ this.Sheethub=function(){
         },
 
         Stylesheet={
-            
+
             /*
                 Add a listener
-                
+
                 Parameters
                     Function callback
             */
@@ -104,7 +103,7 @@ this.Sheethub=function(){
 
             /*
                 Set stylesheet contents
-                
+
                 Parameters
                     string text
             */
@@ -125,10 +124,10 @@ this.Sheethub=function(){
                 }
                 contents=text;
             },
-            
+
             /*
                 Get stylesheet contents
-                
+
                 Return
                     string
             */
@@ -145,13 +144,13 @@ this.Sheethub=function(){
             node:function(){
                 return node;
             }
-        
+
         },
 
         /*---------------------------------
             Initialize the stylesheet
         ---------------------------------*/
-        
+
         isDOMReady=function(){
             if(head){
                 if(typeof stylesheet=='object'){
@@ -198,22 +197,22 @@ this.Sheethub=function(){
                 setTimeout(isDOMReady,250);
             }
         };
-        
+
         isDOMReady();
-        
+
         return Stylesheet;
 
     },
-    
+
     /*========================================================================
         Sheethub object
     ========================================================================*/
-    
+
     Sheethub={
-    
+
         /*
             Add a listener
-            
+
             Parameters
                 Function callback
         */
@@ -229,6 +228,16 @@ this.Sheethub=function(){
         */
         ready:function(){
             return ready;
+        },
+
+        /*
+            List all registered stylesheets
+
+            Return
+                Object
+        */
+        list:function(){
+            return stylesheets;
         },
 
         /*
@@ -288,7 +297,7 @@ this.Sheethub=function(){
                 delete stylesheets[id];
             }
         }
-    
+
     };
 
     /*---------------------------------
@@ -314,7 +323,7 @@ this.Sheethub=function(){
     while(node=nodes[++a]){
         // Get the stylesheet name
         if(!(b=node.title) && node.href){
-            b=node.href.match(/([^\/]+)\.css$/)[1];
+            b='sheet'+Math.round(Math.random()*9000+1000);
         }
         if(b){
             // Add the stylesheet
