@@ -1,7 +1,7 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.6.0
+    Version     : 0.6.1
     Author      : Aurélien Delogu (dev@dreamysource.fr)
     Homepage    : https://github.com/pyrsmk/Sheethub
     License     : MIT
@@ -11,7 +11,10 @@
 */
 
 (function(def){
-    if(typeof module!='undefined'){
+    if(typeof define=='function'){
+		define(def);
+	}
+    else if(typeof module!='undefined'){
         module.exports=def;
     }
     else{

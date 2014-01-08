@@ -1,6 +1,6 @@
 {
   "name": "pyrsmk/Sheethub",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "main": "src/Sheethub.js",
   "description": "Width management tool for responsive designers",
   "license": "MIT",

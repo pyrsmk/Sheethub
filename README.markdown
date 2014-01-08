@@ -1,4 +1,4 @@
-Sheethub 0.6.0
+Sheethub 0.6.1
 ==============
 
 Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
