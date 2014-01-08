@@ -1,0 +1,12 @@
+{
+  "name": "pyrsmk/Sheethub",
+  "version": "0.6.0",
+  "main": "src/Sheethub.js",
+  "description": "Width management tool for responsive designers",
+  "license": "MIT",
+  "author": "Aurélien Delogu",
+  "repository": {
+      "type": "git"
+    , "url": "https://github.com/pyrsmk/Sheethub.git"
+  }
+}
