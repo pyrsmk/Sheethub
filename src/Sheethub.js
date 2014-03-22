@@ -1,10 +1,8 @@
 /*
     Sheethub, the CSS backdoor API
 
-    Version     : 0.6.1
-    Author      : Aurélien Delogu (dev@dreamysource.fr)
-    Homepage    : https://github.com/pyrsmk/Sheethub
-    License     : MIT
+    Author
+        Aurélien Delogu (dev@dreamysource.fr)
 
     TODO
         Stylesheet.init(url): download the stylesheet even it doesn't exist as a node

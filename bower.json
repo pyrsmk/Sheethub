@@ -1,12 +1,20 @@
 {
-  "name": "pyrsmk/Sheethub",
+  "name": "Sheethub",
   "version": "0.6.1",
+  "description": "The CSS backdoor API",
   "main": "src/Sheethub.js",
-  "description": "Width management tool for responsive designers",
-  "license": "MIT",
-  "author": "Aurélien Delogu",
   "repository": {
-      "type": "git"
-    , "url": "https://github.com/pyrsmk/Sheethub.git"
-  }
+    "type": "git",
+    "url": "git://github.com/pyrsmk/Sheethub.git"
+  },
+  "keywords": [
+    "css",
+    "api"
+  ],
+  "authors": ["AurÃ©lien Delogu"],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pyrsmk/Sheethub/issues"
+  },
+  "homepage": "http://dreamysource.fr/product/sheethub"
 }
