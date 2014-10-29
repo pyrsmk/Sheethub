@@ -1,6 +1,5 @@
 {
   "name": "Sheethub",
-  "version": "0.6.1",
   "description": "The CSS backdoor API",
   "main": "src/Sheethub.js",
   "repository": {
