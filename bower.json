@@ -15,5 +15,6 @@
   "bugs": {
     "url": "https://github.com/pyrsmk/Sheethub/issues"
   },
-  "homepage": "http://dreamysource.fr/product/sheethub"
+  "homepage": "http://dreamysource.fr/product/sheethub",
+  "ignore": [".git"]
 }

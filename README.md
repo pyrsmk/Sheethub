@@ -3,13 +3,15 @@ Sheethub 0.6.1
 
 Sheethub is a CSS backdoor API, with the aim of bringing simplicity and centralization to CSS polyfills, making them work together. Shortly: Sheethub retrieves stylesheets itself to be able to access to CSS rules that are not currently applied for incompatibility reasons.
 
-Support
+Install
 -------
-- IE5.5+
-- Chrome
-- Firefox 2+
-- Safari 3+
-- Opera 9+
+
+You can pick the minified library or install it with :
+
+```
+bower install Sheethub
+npm install pyrsmk-sheethub --save-dev
+```
 
 Sheethub scripts
 ----------------
