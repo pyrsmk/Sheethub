@@ -9,6 +9,7 @@ Install
 You can pick the minified library or install it with :
 
 ```
+jam install pyrsmk-sheethub
 bower install Sheethub
 npm install pyrsmk-sheethub --save-dev
 ```
