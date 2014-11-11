@@ -1,9 +1,4 @@
-/*
-	Sheethub, the CSS backdoor API
-
-	Author
-		Aurélien Delogu (dev@dreamysource.fr)
-*/
+/* Sheethub 0.6.1 (https://github.com/pyrsmk/Sheethub) */
 
 ;(function(context,name,definition){
 	if(typeof module!='undefined' && module.exports){
