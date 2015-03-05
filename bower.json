@@ -16,5 +16,13 @@
     "url": "https://github.com/pyrsmk/Sheethub/issues"
   },
   "homepage": "http://dreamysource.fr/product/sheethub",
-  "ignore": [".git"]
+  "ignore": [
+    ".git/",
+    ".gitignore",
+    "nodes_modules/",
+    "src/",
+    "tests/",
+    "Gruntfile.js",
+    "package.json"
+  ]
 }
