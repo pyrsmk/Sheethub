@@ -1,7 +1,7 @@
 {
   "name": "pyrsmk-sheethub",
   "description": "The CSS backdoor API",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": "Aurélien Delogu <pyrsmk@dreamysource.fr> (http://dreamysource.fr)",
   "repository": {
     "type": "git",

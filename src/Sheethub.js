@@ -1,4 +1,4 @@
-/*! Sheethub 0.6.1 (https://github.com/pyrsmk/Sheethub) */
+/*! Sheethub 0.6.2 (https://github.com/pyrsmk/Sheethub) */
 
 ;(function(context,name,definition){
 	if(typeof module!='undefined' && module.exports){
